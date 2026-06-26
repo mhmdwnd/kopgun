@@ -21,6 +21,7 @@ class MenuController extends Controller
     	'harga' => 'required|numeric|min:0',
     	'tipe_suhu' => 'required|in:panas,dingin,netral',
     	'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    	'status' => 'required|in:tersedia,habis,baru',
     ]);
     //logika penyimpanan gambar
     $pathfoto = null;
@@ -36,8 +37,9 @@ class MenuController extends Controller
     	'harga' => $request->harga,
     	'tipe_suhu' => $request->tipe_suhu,
     	'foto' => $pathFoto,
+    	'status' =>$request->status,
     ]);
-     return redirect()->back()->with('succes', 'Menu Baru Berhasil Ditambahkan');
+     return redirect()->route('admin.menu.index')->with('succes', 'Menu Baru Berhasil Ditambahkan');
 
 }
 	public function destroy($id)
@@ -45,6 +47,37 @@ class MenuController extends Controller
 		$menu = Menu::findOrFail($id);
 		$menu->delete();
 
-		return redirect()->back()->with('success', 'Menu Berhasil Dihapus');
+		return redirect()->route('admin.menu.index')->with('success', 'Menu Berhasil Dihapus');
+	}
+
+	public function update(Request $request, $id)
+	{
+		$request->validate([
+			'nama_menu' =>'required|string|max:255',
+			'kategori' =>'required|in:makanan,minuman',
+			'harga' => 'required|numeric|min:0',
+			'tipe_suhu' => 'required|in:panas,dingin,netral',
+			'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+			'status' => 'required|in:tersedia,habis,baru',
+		]);
+
+		//cari data menu berdasarkan id
+		$menu = Menu::findOrFail($id);
+
+		//jika ada foto baru
+		if ($request->hasFile('foto')) {
+			if($menu->foto){
+				\Illuminate\Support\Facades\Storage::disk('public')->delete($menu->foto);
+			}
+			$menu->foto = $request->file('foto')->store('foto_menu', 'public');
+		}
+		$menu->update([
+			'nama_menu' => $request->nama_menu,
+			'kategori' => $request->kategori,
+			'harga' => $request->harga,
+			'tipe_suhu ' => $request->tipe_suhu,
+			'status' => $request->status,
+		]);	
+		return redirect()->route('admin.menu.index')->with('Success', 'Data menu berhasil diupdate');
 	}
 }

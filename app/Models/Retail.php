@@ -5,16 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Menu extends Model
+class Retail extends Model
 {
     use HasFactory;
 
     protected $fillable =[
-    	'nama_menu',
-    	'kategori',
-    	'foto',
+    	'nama_produk',
     	'harga',
-    	'tipe_suhu',
-    	'status',
+    	'detail_spesifik',
+    	'foto',
     ];
 }
