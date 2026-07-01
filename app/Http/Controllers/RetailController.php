@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Storage;
 class RetailController extends Controller
 {
     public function index(){
-    	$retail = Retail::all();
-    	return view('admin.retail', compact('retail'));
+    	$retails = \App\Models\Retail::all();
+    	return view('admin.retail', compact('retails'));
     }
 
     public function store(Request $request)

@@ -6,6 +6,61 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Kelola Menu — Kopgun Admin</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        /* Row hover: slide-in left border accent */
+        .menu-row {
+            position: relative;
+            transition: background 0.15s;
+        }
+        .menu-row::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #1a1a2e;
+            border-radius: 0 2px 2px 0;
+            transform: scaleY(0);
+            transform-origin: center;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .menu-row:hover::before {
+            transform: scaleY(1);
+        }
+        .menu-row:hover {
+            background: #f9fafb;
+        }
+
+        /* Action button hover: fill sweep */
+        .btn-action {
+            position: relative;
+            overflow: hidden;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .btn-action::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: currentColor;
+            opacity: 0;
+            transition: opacity 0.18s;
+        }
+        .btn-action:hover::after {
+            opacity: 0.07;
+        }
+
+        /* Modal entry animation */
+        #editModalPanel {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s;
+            transform: translateY(12px) scale(0.98);
+            opacity: 0;
+        }
+        #editModal:not(.hidden) #editModalPanel {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased text-gray-800">
 
@@ -14,12 +69,10 @@
     {{-- ======================== SIDEBAR ======================== --}}
     <aside class="w-[220px] flex-shrink-0 bg-white border-r border-gray-100 flex flex-col">
 
-        {{-- Logo --}}
         <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-100">
             <div class="w-9 h-9 rounded-lg bg-[#1a1a2e] flex items-center justify-center flex-shrink-0">
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                 </svg>
             </div>
             <div>
@@ -28,9 +81,7 @@
             </div>
         </div>
 
-        {{-- Nav --}}
         <nav class="flex-1 px-3 py-4 overflow-y-auto space-y-0.5">
-
             <p class="px-2 pt-1 pb-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Utama</p>
 
             <a href="{{ route('admin.dashboard') }}"
@@ -74,10 +125,19 @@
             <a href="#"
                 class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-colors">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 10h18M3 14h18M10 3v18M14 3v18"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18M10 3v18M14 3v18"/>
                 </svg>
                 Meja
+            </a>
+
+            <p class="px-2 pt-4 pb-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Retail</p>
+
+            <a href="{{ route('admin.retail.index') }}"
+                class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-colors">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                </svg>
+                Etalase Biji Kopi
             </a>
 
             <p class="px-2 pt-4 pb-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Laporan</p>
@@ -90,10 +150,8 @@
                 </svg>
                 Laporan Penjualan
             </a>
-
         </nav>
 
-        {{-- User --}}
         <div class="px-3 py-4 border-t border-gray-100">
             <div class="flex items-center gap-2.5 px-3 py-2">
                 <div class="w-7 h-7 rounded-full bg-[#1a1a2e] flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0">
@@ -116,13 +174,11 @@
                 </button>
             </form>
         </div>
-
     </aside>
 
     {{-- ======================== MAIN ======================== --}}
     <div class="flex-1 flex flex-col overflow-hidden">
 
-        {{-- Topbar --}}
         <header class="h-14 bg-white border-b border-gray-100 flex items-center justify-between px-6 flex-shrink-0">
             <div>
                 <h1 class="text-[15px] font-semibold text-gray-900">Kelola Menu</h1>
@@ -137,7 +193,6 @@
             </a>
         </header>
 
-        {{-- Content --}}
         <div class="flex-1 overflow-y-auto p-5">
             <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-4 items-start">
 
@@ -163,7 +218,6 @@
                         <form action="{{ route('admin.menu.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
-                            {{-- Nama --}}
                             <div class="mb-4">
                                 <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Nama produk</label>
                                 <input type="text" name="nama_menu" value="{{ old('nama_menu') }}" required
@@ -174,7 +228,6 @@
                                 @enderror
                             </div>
 
-                            {{-- Kategori --}}
                             <div class="mb-4">
                                 <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Kategori</label>
                                 <select name="kategori" required
@@ -184,37 +237,71 @@
                                 </select>
                             </div>
 
-                            {{-- Harga --}}
+                            <div class="mb-4">
+                                <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Sub Kategori</label>
+                                <select name="sub_kategori" required
+                                    class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-800 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
+                                    <option value="" disabled selected>Pilih sub kategori...</option>
+                                    <optgroup label="Kategori Makanan">
+                                        <option value="snack" {{ old('sub_kategori') === 'snack' ? 'selected' : '' }}>Snack Kopgun</option>
+                                        <option value="mie" {{ old('sub_kategori') === 'mie' ? 'selected' : '' }}>Mie</option>
+                                        <option value="makanan_berat" {{ old('sub_kategori') === 'makanan_berat' ? 'selected' : '' }}>Makanan Berat</option>
+                                        <option value="roti_bakar" {{ old('sub_kategori') === 'roti_bakar' ? 'selected' : '' }}>Roti Bakar</option>
+                                    </optgroup>
+                                    <optgroup label="Kategori Minuman">
+                                        <option value="signature_coffee" {{ old('sub_kategori') === 'signature_coffee' ? 'selected' : '' }}>Signature Coffee</option>
+                                        <option value="flavor_latte" {{ old('sub_kategori') === 'flavor_latte' ? 'selected' : '' }}>Flavor Latte</option>
+                                        <option value="manual_brew" {{ old('sub_kategori') === 'manual_brew' ? 'selected' : '' }}>Manual Brew</option>
+                                        <option value="soda" {{ old('sub_kategori') === 'soda' ? 'selected' : '' }}>Splitz Soda Base</option>
+                                        <option value="spresso_mixology" {{ old('sub_kategori') === 'spresso_mixology' ? 'selected' : '' }}>Spresso Mixology</option>
+                                        <option value="artisan_tea_mixology" {{ old('sub_kategori') === 'artisan_tea_mixology' ? 'selected' : '' }}>Artisan Tea Mixology</option>
+                                        <option value="espresso_based" {{ old('sub_kategori') === 'espresso_based' ? 'selected' : '' }}>Espresso Based Mixology</option>
+                                        <option value="non_coffee" {{ old('sub_kategori') === 'non_coffee' ? 'selected' : '' }}>Non Coffee</option>
+                                        <option value="milk_based" {{ old('sub_kategori') === 'milk_based' ? 'selected' : '' }}>Milk Based</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+
                             <div class="mb-4">
                                 <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Harga (Rp)</label>
-                                <input type="number" name="harga" value="{{ old('harga') }}" required min="0"
-                                    placeholder="0"
-                                    class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-800 placeholder-gray-300 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
+                                <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#1a1a2e] focus-within:ring-2 focus-within:ring-[#1a1a2e]/10 transition">
+                                    <button type="button" onclick="stepHarga('harga', -1000)"
+                                        class="flex-shrink-0 w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-50 border-r border-gray-200 transition-colors select-none text-lg leading-none">
+                                        −
+                                    </button>
+                                    <input type="number" id="harga" name="harga" value="{{ old('harga', 0) }}" required min="0" step="1000"
+                                        class="flex-1 text-[13px] px-3 py-2 bg-white text-gray-800 text-center focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none">
+                                    <button type="button" onclick="stepHarga('harga', 1000)"
+                                        class="flex-shrink-0 w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-50 border-l border-gray-200 transition-colors select-none text-lg leading-none">
+                                        +
+                                    </button>
+                                </div>
+                                <p class="text-[11px] text-gray-400 mt-1">Kelipatan Rp 1.000</p>
                                 @error('harga')
                                     <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            {{-- Tipe Suhu --}}
                             <div class="mb-4">
                                 <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Tipe suhu</label>
                                 <select name="tipe_suhu" required
                                     class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-800 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
-                                    <option value="netral"  {{ old('tipe_suhu') === 'netral'  ? 'selected' : '' }}>Netral (cocok di segala cuaca)</option>
-                                    <option value="panas"   {{ old('tipe_suhu') === 'panas'   ? 'selected' : '' }}>Panas / Hot</option>
-                                    <option value="dingin"  {{ old('tipe_suhu') === 'dingin'  ? 'selected' : '' }}>Dingin / Ice</option>
+                                    <option value="netral" {{ old('tipe_suhu') === 'netral' ? 'selected' : '' }}>Netral (cocok di segala cuaca)</option>
+                                    <option value="panas" {{ old('tipe_suhu') === 'panas' ? 'selected' : '' }}>Panas / Hot</option>
+                                    <option value="dingin" {{ old('tipe_suhu') === 'dingin' ? 'selected' : '' }}>Dingin / Ice</option>
                                 </select>
                             </div>
-                            <div class="mb-5">
-                            <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Status Ketersediaan</label>
-                            <select name="status" required class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-800 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
-                                <option value="tersedia">Tersedia (Tampil di Kasir)</option>
-                                <option value="habis">Habis (Stok Kosong)</option>
-                                <option value="musiman">Baru (Sembunyikan sementara)</option>
-                            </select>
-                        </div>
 
-                            {{-- Upload Foto --}}
+                            <div class="mb-5">
+                                <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Status Ketersediaan</label>
+                                <select name="status" required
+                                    class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-800 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
+                                    <option value="tersedia">Tersedia (Tampil di Kasir)</option>
+                                    <option value="habis">Habis (Stok Kosong)</option>
+                                    <option value="musiman">Baru (Sembunyikan sementara)</option>
+                                </select>
+                            </div>
+
                             <div class="mb-5">
                                 <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Foto menu</label>
                                 <label for="foto-upload"
@@ -239,7 +326,6 @@
                                 Simpan menu
                             </button>
                         </form>
-
                     </div>
                 </div>
 
@@ -248,8 +334,7 @@
                     <div class="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
                         <div class="flex items-center gap-2.5">
                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                             </svg>
                             <h2 class="text-[13px] font-semibold text-gray-800">Daftar menu</h2>
                         </div>
@@ -272,14 +357,14 @@
                             </thead>
                             <tbody class="divide-y divide-gray-50">
                                 @forelse($menus as $menu)
-                                    <tr class="hover:bg-gray-50/60 transition-colors">
+                                    <tr class="menu-row">
 
                                         {{-- Foto --}}
                                         <td class="px-5 py-3.5">
                                             @if($menu->foto)
                                                 <img src="{{ asset('storage/' . $menu->foto) }}"
                                                     alt="{{ $menu->nama_menu }}"
-                                                    class="w-11 h-11 object-cover rounded-lg border border-gray-100">
+                                                    class="w-11 h-11 object-cover rounded-lg border border-gray-100 transition-transform duration-200 group-hover:scale-105">
                                             @else
                                                 <div class="w-11 h-11 rounded-lg bg-gray-100 border border-gray-100 flex items-center justify-center">
                                                     <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -290,10 +375,9 @@
                                             @endif
                                         </td>
 
-                                        {{{-- Nama & Status --}}
+                                        {{-- Nama & Status --}}
                                         <td class="px-5 py-3.5">
                                             <p class="text-[13px] font-medium text-gray-900 mb-1">{{ $menu->nama_menu }}</p>
-                                            
                                             @if($menu->status === 'tersedia')
                                                 <span class="inline-flex text-[10px] font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700 border border-green-200">Tersedia</span>
                                             @elseif($menu->status === 'habis')
@@ -306,8 +390,7 @@
                                         {{-- Kategori --}}
                                         <td class="px-5 py-3.5">
                                             @if($menu->kategori === 'makanan')
-                                                <span class="inline-flex items-center 
-                                                gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-green-50 text-green-700 border border-green-100">
+                                                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-green-50 text-green-700 border border-green-100">
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13"/>
                                                     </svg>
@@ -348,33 +431,31 @@
                                         {{-- Aksi --}}
                                         <td class="px-5 py-3.5">
                                             <div class="flex items-center justify-end gap-2">
-                                                {{-- Edit --}}
-                                               <!--  <a href="#"
-                                                    class="inline-flex items-center gap-1.5 text-[12px] text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
+                                                <button type="button"
+                                                    onclick="openEditModal(
+                                                        '{{ $menu->id }}',
+                                                        '{{ addslashes($menu->nama_menu) }}',
+                                                        '{{ $menu->kategori }}',
+                                                        '{{ $menu->sub_kategori }}',
+                                                        '{{ $menu->harga }}',
+                                                        '{{ $menu->tipe_suhu }}',
+                                                        '{{ $menu->status }}',
+                                                        '{{ $menu->foto ? asset('storage/' . $menu->foto) : '' }}'
+                                                    )"
+                                                    class="btn-action inline-flex items-center gap-1.5 text-[12px] text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                                     </svg>
                                                     Ubah
-                                                </a>
-
- -->
-                                                {{-- Edit (Pemicu Modal) --}}
-                                                <button type="button" 
-                                                    onclick="openEditModal('{{ $menu->id }}', '{{ addslashes($menu->nama_menu) }}', '{{ $menu->kategori }}', '{{ $menu->harga }}', '{{ $menu->tipe_suhu }}', '{{ $menu->status }}', '{{ $menu->foto ? asset('storage/' . $menu->foto) : '' }}')"
-                                                    class="inline-flex items-center gap-1.5 text-[12px] text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                                    </svg>
-                                                    Ubah
                                                 </button>
-                                                {{-- Delete --}}
+
                                                 <form action="{{ route('admin.menu.destroy', $menu->id) }}" method="POST"
                                                     onsubmit="return confirm('Hapus menu {{ addslashes($menu->nama_menu) }}?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
-                                                        class="inline-flex items-center gap-1.5 text-[12px] text-red-500 border border-red-100 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors">
+                                                        class="btn-action inline-flex items-center gap-1.5 text-[12px] text-red-500 border border-red-100 px-3 py-1.5 rounded-lg">
                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -403,110 +484,186 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
-                {{-- end tabel --}}
 
             </div>
         </div>
-        {{-- end content --}}
 
     </div>
-    {{-- end main --}}
-
 </div>
-{{-- ======================== MODAL EDIT MENU (POPUP) ======================== --}}
-<div id="editModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+
+{{-- ======================== MODAL EDIT ======================== --}}
+{{-- Overlay: full screen, scroll dari atas ke bawah --}}
+<div id="editModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    {{-- Backdrop --}}
     <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onclick="closeEditModal()"></div>
 
-    <div class="bg-white rounded-xl border border-gray-100 shadow-2xl w-full max-w-md mx-4 z-10 overflow-hidden transform transition-all">
-        <div class="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 bg-gray-50/50">
+    {{-- Wrapper: posisi panel di tengah dengan margin atas-bawah --}}
+    <div class="relative z-10 flex justify-center px-4 py-10 min-h-full">
+    <div id="editModalPanel"
+        class="bg-white rounded-xl border border-gray-100 shadow-2xl w-full max-w-md h-fit">
+
+        {{-- Header: selalu terlihat, tidak ikut scroll --}}
+        <div class="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 bg-gray-50/50 flex-shrink-0 rounded-t-xl">
             <h2 class="text-[13px] font-semibold text-gray-800">Ubah Data Menu</h2>
-            <button type="button" onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <button type="button" onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
             </button>
         </div>
 
-        <div class="p-5">
-            <form id="editForm" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
+        <form id="editForm" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
 
-                <div class="mb-4">
+            {{-- Semua field + tombol dalam satu scroll area --}}
+            <div class="px-5 py-4 space-y-4">
+
+                <div>
                     <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Nama produk</label>
-                    <input type="text" id="edit_nama_menu" name="nama_menu" required class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#1a1a2e]/10">
+                    <input type="text" id="edit_nama_menu" name="nama_menu" required
+                        class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
                 </div>
 
-                <div class="mb-4">
+                <div>
                     <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Kategori</label>
-                    <select id="edit_kategori" name="kategori" required class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#1a1a2e]/10">
+                    <select id="edit_kategori" name="kategori" required
+                        class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
                         <option value="makanan">Makanan</option>
                         <option value="minuman">Minuman</option>
                     </select>
                 </div>
 
-                <div class="mb-4">
-                    <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Harga (Rp)</label>
-                    <input type="number" id="edit_harga" name="harga" required class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#1a1a2e]/10">
+                <div>
+                    <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Sub Kategori</label>
+                    <select id="edit_sub_kategori" name="sub_kategori" required
+                        class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
+                        <optgroup label="Kategori Makanan">
+                            <option value="snack">Snack Kopgun</option>
+                            <option value="mie">Mie</option>
+                            <option value="makanan_berat">Makanan Berat</option>
+                            <option value="roti_bakar">Roti Bakar</option>
+                        </optgroup>
+                        <optgroup label="Kategori Minuman">
+                            <option value="signature_coffee">Signature Coffee</option>
+                            <option value="flavor_latte">Flavor Latte</option>
+                            <option value="manual_brew">Manual Brew</option>
+                            <option value="soda">Splitz Soda Base</option>
+                            <option value="spresso_mixology">Spresso Mixology</option>
+                            <option value="artisan_tea_mixology">Artisan Tea Mixology</option>
+                            <option value="espresso_based">Espresso Based Mixology</option>
+                            <option value="non_coffee">Non Coffee</option>
+                            <option value="milk_based">Milk Based</option>
+                        </optgroup>
+                    </select>
                 </div>
 
-                <div class="mb-4">
+                <div>
+                    <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Harga (Rp)</label>
+                    <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden focus-within:border-[#1a1a2e] focus-within:ring-2 focus-within:ring-[#1a1a2e]/10 transition">
+                        <button type="button" onclick="stepHarga('edit_harga', -1000)"
+                            class="flex-shrink-0 w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-50 border-r border-gray-200 transition-colors select-none text-lg leading-none">
+                            −
+                        </button>
+                        <input type="number" id="edit_harga" name="harga" required min="0" step="1000"
+                            class="flex-1 text-[13px] px-3 py-2 bg-white text-gray-800 text-center focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none">
+                        <button type="button" onclick="stepHarga('edit_harga', 1000)"
+                            class="flex-shrink-0 w-9 h-9 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-50 border-l border-gray-200 transition-colors select-none text-lg leading-none">
+                            +
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-gray-400 mt-1">Kelipatan Rp 1.000</p>
+                </div>
+
+                <div>
                     <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Tipe suhu</label>
-                    <select id="edit_tipe_suhu" name="tipe_suhu" required class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#1a1a2e]/10">
+                    <select id="edit_tipe_suhu" name="tipe_suhu" required
+                        class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
                         <option value="netral">Netral (cocok di segala cuaca)</option>
                         <option value="panas">Panas / Hot</option>
                         <option value="dingin">Dingin / Ice</option>
                     </select>
                 </div>
-                <div class="mb-4">
-                <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Status Ketersediaan</label>
-                <select id="edit_status" name="status" required class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-800 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
-                    <option value="tersedia">Tersedia (Tampil di Kasir)</option>
-                    <option value="habis">Habis (Stok Kosong)</option>
-                    <option value="musiman">Baru (Sembunyikan sementara)</option>
-                </select>
+
+                <div>
+                    <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Status Ketersediaan</label>
+                    <select id="edit_status" name="status" required
+                        class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-800 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
+                        <option value="tersedia">Tersedia (Tampil di Kasir)</option>
+                        <option value="habis">Habis (Stok Kosong)</option>
+                        <option value="musiman">Baru (Sembunyikan sementara)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[12px] font-medium text-gray-600 mb-1.5">
+                        Foto menu
+                        <span class="text-gray-400 font-normal">(kosongkan jika tidak diganti)</span>
+                    </label>
+                    <div id="edit_preview_container" class="mb-2 hidden">
+                        <img id="edit_preview_img" src="" alt="Preview"
+                            class="w-16 h-16 object-cover rounded-lg border border-gray-200">
+                    </div>
+                    <input type="file" id="edit-foto-upload" name="foto" accept="image/*"
+                        class="w-full text-[12px] text-gray-500 border border-gray-200 rounded-lg p-2 focus:outline-none focus:border-[#1a1a2e] transition">
+                </div>
+
             </div>
 
-                <div class="mb-5">
-                    <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Foto menu (Kosongkan jika tidak diganti)</label>
-                    <div id="edit_preview_container" class="mb-2 hidden">
-                        <img id="edit_preview_img" src="" class="w-16 h-16 object-cover rounded-lg border border-gray-200">
-                    </div>
-                    <input type="file" id="edit-foto-upload" name="foto" accept="image/*" class="w-full text-[12px] text-gray-500 border border-gray-200 rounded-lg p-2">
+                {{-- Tombol aksi — di dalam scroll, selalu bisa dijangkau --}}
+                <div class="flex gap-2.5 pt-2 pb-1 border-t border-gray-100">
+                    <button type="button" onclick="closeEditModal()"
+                        class="flex-1 border border-gray-200 text-gray-500 text-[13px] py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="flex-1 bg-[#1a1a2e] hover:bg-[#2a2a42] text-white text-[13px] py-2.5 rounded-lg transition-colors">
+                        Simpan perubahan
+                    </button>
                 </div>
 
-                <div class="flex gap-2.5 mt-6">
-                    <button type="button" onclick="closeEditModal()" class="flex-1 border border-gray-200 text-gray-500 text-[13px] py-2 rounded-lg hover:bg-gray-50">Batal</button>
-                    <button type="submit" class="flex-1 bg-[#1a1a2e] text-white text-[13px] py-2 rounded-lg hover:bg-[#2a2a42]">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+            </div>{{-- end scroll body --}}
+        </form>
+    </div>{{-- end panel --}}
+    </div>{{-- end wrapper --}}
+</div>{{-- end modal overlay --}}
+
 <script>
-    // Preview file tambah menu
+    // Stepper harga kelipatan 1000
+    function stepHarga(inputId, delta) {
+        const input = document.getElementById(inputId);
+        const current = parseInt(input.value, 10) || 0;
+        const next = Math.max(0, current + delta);
+        input.value = next;
+    }
+
+    // Cegah scroll mouse mengubah nilai input number harga
+    document.addEventListener('DOMContentLoaded', () => {
+        ['harga', 'edit_harga'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('wheel', e => e.preventDefault(), { passive: false });
+        });
+    });
+    // Preview file upload (form tambah)
     document.getElementById('foto-upload')?.addEventListener('change', function () {
         const nameEl = document.getElementById('foto-name');
-        if (this.files.length > 0) {
-            nameEl.textContent = this.files[0].name;
-            nameEl.classList.remove('hidden');
-        } else {
-            nameEl.classList.add('hidden');
-        }
+        nameEl.textContent = this.files.length > 0 ? this.files[0].name : '';
+        nameEl.classList.toggle('hidden', this.files.length === 0);
     });
 
-    // Fungsi Buka Modal & Isi Data
-    function openEditModal(id, nama, kategori, harga, tipeSuhu, fotoUrl) {
+    // Buka modal edit — parameter sesuai urutan onclick di atas
+    function openEditModal(id, nama, kategori, subKategori, harga, tipeSuhu, status, fotoUrl) {
         document.getElementById('editForm').action = '/admin/menu/' + id;
-        document.getElementById('edit_nama_menu').value = nama;
-        document.getElementById('edit_kategori').value = kategori;
-        document.getElementById('edit_harga').value = harga;
-        document.getElementById('edit_tipe_suhu').value = tipeSuhu;
-        document.getElementById('edit_status').value=status;
+        document.getElementById('edit_nama_menu').value   = nama;
+        document.getElementById('edit_kategori').value    = kategori;
+        document.getElementById('edit_sub_kategori').value = subKategori;
+        document.getElementById('edit_harga').value       = harga;
+        document.getElementById('edit_tipe_suhu').value   = tipeSuhu;
+        document.getElementById('edit_status').value      = status;
 
         const previewContainer = document.getElementById('edit_preview_container');
-        const previewImg = document.getElementById('edit_preview_img');
-        
+        const previewImg       = document.getElementById('edit_preview_img');
         if (fotoUrl) {
             previewImg.src = fotoUrl;
             previewContainer.classList.remove('hidden');
@@ -515,12 +672,17 @@
         }
 
         document.getElementById('editModal').classList.remove('hidden');
+        document.getElementById('editModal').scrollTop = 0;
     }
 
-    // Fungsi Tutup Modal
     function closeEditModal() {
         document.getElementById('editModal').classList.add('hidden');
     }
+
+    // Tutup modal dengan Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeEditModal();
+    });
 </script>
 
 </body>

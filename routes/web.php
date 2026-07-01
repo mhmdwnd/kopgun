@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RetailController;
+use App\Http\Controllers\PosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,9 +56,24 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 // Rute Khusus Kasir
 Route::middleware(['auth', 'role:kasir'])->group(function () {
-    Route::get('/kasir/dashboard', function () {
-        return view('kasir.dashboard');
+
+    Route::get('/pos/index', function () {
+        return redirect()->route('pos.index');
     });
+
+    // 2. Rute Aplikasi POS Kasir (Ini yang memanggil PosController)
+    Route::get('/pos', [PosController::class, 'index'])->name('pos.index');
+    //simpan dan riwayet
+	Route::post('/pos/simpan',  [PosController::class, 'simpan'])->name('pos.simpan');
+	Route::get('/pos/riwayat',  [PosController::class, 'riwayat'])->name('pos.riwayat');
+
+
+
+
+
+	Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->name('logout');
+
 });
 
 require __DIR__.'/auth.php';

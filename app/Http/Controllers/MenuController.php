@@ -18,6 +18,7 @@ class MenuController extends Controller
     	$request->validate([
     	'nama_menu'=> 'required|string|max:255',
     	'kategori' =>'required|in:makanan,minuman',
+    	'sub_kategori' =>'required|string',
     	'harga' => 'required|numeric|min:0',
     	'tipe_suhu' => 'required|in:panas,dingin,netral',
     	'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -34,6 +35,7 @@ class MenuController extends Controller
     Menu::create([
     	'nama_menu'=> $request->nama_menu,
     	'kategori' => $request->kategori,
+    	'sub_kategori' => $request->sub_kategori,
     	'harga' => $request->harga,
     	'tipe_suhu' => $request->tipe_suhu,
     	'foto' => $pathFoto,
@@ -55,6 +57,7 @@ class MenuController extends Controller
 		$request->validate([
 			'nama_menu' =>'required|string|max:255',
 			'kategori' =>'required|in:makanan,minuman',
+			'sub_kategori' => 'required|string',
 			'harga' => 'required|numeric|min:0',
 			'tipe_suhu' => 'required|in:panas,dingin,netral',
 			'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -74,6 +77,7 @@ class MenuController extends Controller
 		$menu->update([
 			'nama_menu' => $request->nama_menu,
 			'kategori' => $request->kategori,
+			'sub_kategori' =>$request->sub_kategori,
 			'harga' => $request->harga,
 			'tipe_suhu ' => $request->tipe_suhu,
 			'status' => $request->status,
