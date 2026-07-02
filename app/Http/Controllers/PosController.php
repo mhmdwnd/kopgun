@@ -75,35 +75,66 @@ class PosController extends Controller
         return view('pos.index', compact('menus', 'menusBySubKategori', 'weatherData'));
     }
 
-    public function simpanTransaksi(Request $request)
-    {
-        try {
-            $request->validate([
-                'nomor_meja' => 'required',
-                'total_pembayaran' => 'required|numeric',
-                'metode_pembayaran' => 'required|string',
-                'items' => 'required|array'
-            ]);
+public function simpanTransaksi(Request $request)
+{
+    try {
+        $request->validate([
+            'nomor_meja' => 'required',
+            'total_pembayaran' => 'required|numeric',
+            'metode_pembayaran' => 'required|string',
+            'items' => 'required|array'
+        ]);
 
-            \App\Models\Transaksi::create([
-                'nama_pelanggan' => $request->nama_pelanggan ?? 'Anonim',
-                'nomor_meja' => $request->nomor_meja,
-                'total_pembayaran' => $request->total_pembayaran,
-                'metode_pembayaran' => $request->metode_pembayaran,
-                'items' => $request->items
-            ]);
+        // Bersihkan setiap item sebelum disimpan sebagai JSON.
+        // Ini mencegah error "Malformed UTF-8 characters" saat json_encode(),
+        // yang paling sering muncul dari field catatan/suhu_pilihan hasil input mobile.
+        $items = collect($request->items)->map(function ($item) {
+            return [
+                'menu_id'      => $item['menu_id'] ?? null,
+                'nama'         => isset($item['nama']) ? mb_convert_encoding($item['nama'], 'UTF-8', 'UTF-8') : null,
+                'harga'        => $item['harga'] ?? 0,
+                'kuantitas'    => $item['kuantitas'] ?? 1,
+                'suhu_pilihan' => isset($item['suhu_pilihan']) ? mb_convert_encoding($item['suhu_pilihan'], 'UTF-8', 'UTF-8') : null,
+                'catatan'      => isset($item['catatan']) ? mb_convert_encoding($item['catatan'], 'UTF-8', 'UTF-8') : null,
+            ];
+        })->toArray();
 
-            return response()->json(['success' => true, 'message' => 'Transaksi berhasil disimpan']);
-        } catch (\Exception $e) {
-            // Ini akan mengirimkan pesan eror aslinya ke layar peramban Anda!
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-        }
+        $transaksi = \App\Models\Transaksi::create([
+            'nama_pelanggan'    => $request->nama_pelanggan ?? 'Anonim',
+            'nomor_meja'        => $request->nomor_meja,
+            'total_pembayaran'  => $request->total_pembayaran,
+            'metode_pembayaran' => $request->metode_pembayaran,
+            'items'             => $items,
+        ]);
+
+        return response()->json([
+            'success'       => true,
+            'message'       => 'Transaksi berhasil disimpan',
+            'id_transaksi'  => $transaksi->id
+        ]);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        // Tangkap validasi terpisah supaya pesannya jelas (bukan tertutup Exception umum)
+        return response()->json([
+            'success' => false,
+            'message' => $e->validator->errors()->first()
+        ], 422);
+
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error('Gagal simpan transaksi POS: ' . $e->getMessage(), [
+            'trace' => $e->getTraceAsString()
+        ]);
+
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 500);
     }
+}
  
     // Fungsi untuk mengambil riwayat transaksi hari ini
     public function riwayatTransaksi()
     {
-        // Ambil transaksi hari ini, urutkan dari yang paling baru
         $riwayat = Transaksi::whereDate('created_at', \Carbon\Carbon::today())
             ->orderBy('created_at', 'desc')
             ->get();

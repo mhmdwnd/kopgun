@@ -18,9 +18,9 @@ use App\Http\Controllers\PosController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
@@ -64,8 +64,8 @@ Route::middleware(['auth', 'role:kasir'])->group(function () {
     // 2. Rute Aplikasi POS Kasir (Ini yang memanggil PosController)
     Route::get('/pos', [PosController::class, 'index'])->name('pos.index');
     //simpan dan riwayet
-	Route::post('/pos/simpan',  [PosController::class, 'simpan'])->name('pos.simpan');
-	Route::get('/pos/riwayat',  [PosController::class, 'riwayat'])->name('pos.riwayat');
+	Route::post('/pos/simpan-transaksi',  [PosController::class, 'simpanTransaksi'])->name('pos.simpan');
+	Route::get('/pos/riwayat',  [PosController::class, 'riwayatTransaksi'])->name('pos.riwayat');
 
 
 
