@@ -88,22 +88,22 @@
 <div class="flex-1 flex overflow-hidden">
 
    {{-- ===== PANEL KIRI: KATALOG ===== --}}
+       {{-- ===== PANEL KIRI: KATALOG ===== --}}
         <div class="flex-1 flex flex-col overflow-hidden bg-gray-50 p-4 gap-3">
-            
-            {{-- LETAKKAN DI SINI (Gantikan banner lama dengan ini) --}}
+
+            {{-- Banner Analisis Cuaca (TIDAK BERUBAH, tetap kode Anda yang sudah ada) --}}
             <div class="relative bg-gradient-to-r from-[#1a1a2e] to-blue-900 rounded-2xl p-5 shadow-lg overflow-hidden flex-shrink-0">
                 <div class="absolute top-0 right-0 bg-blue-500 text-white text-[9px] font-black tracking-widest px-3 py-1.5 rounded-bl-xl uppercase shadow-md flex items-center gap-1">
                     <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
                     API Weather Active
                 </div>
-
                 <div class="relative z-10 flex items-center gap-4 text-white">
                     <div class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20 flex-shrink-0 text-2xl shadow-inner">
                         @if($weatherData['rekomendasi_suhu'] === 'panas') 🌧️ @else ☀️ @endif
                     </div>
                     <div>
                         <h3 class="text-[14px] font-bold text-white mb-0.5 flex items-center gap-1.5">
-                            Analisis Cuaca Real-Time 
+                            Analisis Cuaca Real-Time
                             <span class="text-blue-300 text-[11px] font-medium border border-blue-300/30 px-1.5 py-0.5 rounded">{{ $weatherData['suhu'] ?? '--' }}°C</span>
                         </h3>
                         <p class="text-[12px] text-gray-300 leading-snug">
@@ -117,69 +117,139 @@
                         </p>
                     </div>
                 </div>
-                
                 <div class="absolute -right-4 -bottom-8 w-24 h-24 bg-white opacity-5 rounded-full blur-2xl"></div>
             </div>
 
-        {{-- Navigasi Tab Sub-Kategori --}}
-        <div class="flex items-center gap-2 overflow-x-auto scroll-hide flex-shrink-0 pb-0.5">
-            <button onclick="filterSubKategori('semua')" id="btn-tab-semua" class="tab-pill flex-shrink-0 px-4 py-1.5 text-[12px] font-medium rounded-lg border bg-[#1a1a2e] text-white border-[#1a1a2e] transition-all">Semua</button>
-            @foreach($menusBySubKategori as $subKat => $items)
-                <button onclick="filterSubKategori('{{ $subKat }}')" id="btn-tab-{{ $subKat }}" class="tab-pill flex-shrink-0 px-4 py-1.5 text-[12px] font-medium rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 transition-all whitespace-nowrap">
-                    {{ ucwords(str_replace('_', ' ', $subKat)) }}
-                </button>
-            @endforeach
-        </div>
+            {{-- Satu area scroll untuk ketiga section, supaya kasir scroll dari atas ke bawah secara natural --}}
+            <div class="flex-1 overflow-y-auto scroll-hide space-y-5">
 
-        {{-- Grid Daftar Menu --}}
-        <div class="flex-1 overflow-y-auto scroll-hide">
-            <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
-                @forelse($menus as $menu)
-                    @php $isHabis = $menu->status === 'habis'; @endphp
-                    <div class="menu-card bg-white rounded-xl border border-gray-100 overflow-hidden flex flex-col select-none {{ $isHabis ? 'opacity-50 pointer-events-none' : 'cursor-pointer' }}"
-                         data-subkategori="{{ $menu->sub_kategori }}"
-                         onclick="{{ $isHabis ? '' : "bukaModalOpsi('{$menu->id}','".addslashes($menu->nama_menu)."',{$menu->harga},'".($menu->foto ? asset('storage/'.$menu->foto) : '')."','{$menu->tipe_suhu}', '{$menu->kategori}')" }}">
-
-                        <div class="relative aspect-video w-full bg-gray-100 overflow-hidden flex-shrink-0 border-b border-gray-50">
-                            @if($menu->foto)
-                                <img src="{{ asset('storage/'.$menu->foto) }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center"><svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
-                            @endif
-
-                            <div class="absolute bottom-2 left-2">
-                                @if($menu->tipe_suhu === 'panas')
-                                    <span class="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-orange-500 text-white shadow-sm">HOT</span>
-                                @elseif($menu->tipe_suhu === 'dingin')
-                                    <span class="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-sky-500 text-white shadow-sm">ICE</span>
-                                @endif
-                            </div>
-
-                            @if($weatherData['rekomendasi_suhu'] === $menu->tipe_suhu && $menu->tipe_suhu !== 'netral' && !$isHabis)
-                                <div class="absolute top-2 right-2 bg-emerald-500 text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-full shadow border border-white">✦ Rekomendasi</div>
-                            @endif
-
-                            @if($isHabis)
-                                <div class="absolute inset-0 bg-white/60 flex items-center justify-center">
-                                    <span class="text-[10px] font-semibold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">Habis</span>
-                                </div>
-                            @endif
-                        </div>
-
-                        <div class="p-3 flex-1 flex flex-col justify-between">
-                            <div>
-                                <p class="text-[10px] text-gray-400 uppercase tracking-wider font-medium mb-0.5">{{ str_replace('_', ' ', $menu->sub_kategori) }}</p>
-                                <h3 class="text-[13px] font-semibold text-gray-800 line-clamp-2 leading-snug">{{ $menu->nama_menu }}</h3>
-                            </div>
-                            <p class="text-[13px] font-bold text-gray-900 mt-2 pt-2 border-t border-gray-50">Rp {{ number_format($menu->harga, 0, ',', '.') }}</p>
-                        </div>
+                {{-- ===== SECTION 1: REKOMENDASI CUACA ===== --}}
+                @if(!$weatherData['is_offline'] && $menuRekomendasi->isNotEmpty())
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <h2 class="text-[13px] font-semibold text-gray-700">✦ Rekomendasi Hari Ini</h2>
+                        <span class="text-[10px] text-gray-400">
+                            {{ $weatherData['rekomendasi_suhu'] === 'panas' ? 'Cuaca sejuk, cocok yang hangat' : 'Cuaca panas, cocok yang dingin' }}
+                        </span>
                     </div>
-                @empty
-                    <div class="col-span-full py-16 text-center text-[13px] text-gray-400">Belum ada menu tersedia.</div>
-                @endforelse
+                    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
+                        @foreach($menuRekomendasi as $menu)
+                            @php $isHabis = $menu->status === 'habis'; @endphp
+                            <div class="menu-card bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 rounded-xl overflow-hidden flex flex-col select-none {{ $isHabis ? 'opacity-50 pointer-events-none' : 'cursor-pointer' }}"
+                                 onclick="{{ $isHabis ? '' : "bukaModalOpsi('{$menu->id}','".addslashes($menu->nama_menu)."',{$menu->harga},'".($menu->foto ? asset('storage/'.$menu->foto) : '')."','{$menu->tipe_suhu}', '{$menu->kategori}')" }}">
+                                <div class="relative aspect-video w-full bg-white/50 overflow-hidden flex-shrink-0 border-b border-amber-100">
+                                    @if($menu->foto)
+                                        <img src="{{ asset('storage/'.$menu->foto) }}" class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center"><svg class="w-8 h-8 text-amber-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+                                    @endif
+                                    @if($isHabis)
+                                        <div class="absolute inset-0 bg-white/60 flex items-center justify-center">
+                                            <span class="text-[10px] font-semibold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">Habis</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="p-3 flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <p class="text-[10px] text-amber-600 uppercase tracking-wider font-medium mb-0.5">{{ str_replace('_', ' ', $menu->sub_kategori) }}</p>
+                                        <h3 class="text-[13px] font-semibold text-gray-800 line-clamp-2 leading-snug">{{ $menu->nama_menu }}</h3>
+                                    </div>
+                                    <p class="text-[13px] font-bold text-gray-900 mt-2 pt-2 border-t border-amber-100">Rp {{ number_format($menu->harga, 0, ',', '.') }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                {{-- ===== SECTION 2: MENU REGULER ===== --}}
+                <div>
+                    <h2 class="text-[13px] font-semibold text-gray-700 mb-2">Menu Reguler</h2>
+
+                    <div class="flex items-center gap-2 overflow-x-auto scroll-hide flex-shrink-0 pb-2">
+                        <button onclick="filterSubKategori('semua')" id="btn-tab-semua" class="tab-pill flex-shrink-0 px-4 py-1.5 text-[12px] font-medium rounded-lg border bg-[#1a1a2e] text-white border-[#1a1a2e] transition-all">Semua</button>
+                        @foreach($menusBySubKategori as $subKat => $items)
+                            <button onclick="filterSubKategori('{{ $subKat }}')" id="btn-tab-{{ $subKat }}" class="tab-pill flex-shrink-0 px-4 py-1.5 text-[12px] font-medium rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 transition-all whitespace-nowrap">
+                                {{ ucwords(str_replace('_', ' ', $subKat)) }}
+                            </button>
+                        @endforeach
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
+                        @forelse($menus as $menu)
+                            @php $isHabis = $menu->status === 'habis'; @endphp
+                            <div class="menu-card menu-reguler-card bg-white rounded-xl border border-gray-100 overflow-hidden flex flex-col select-none {{ $isHabis ? 'opacity-50 pointer-events-none' : 'cursor-pointer' }}"
+                                 data-subkategori="{{ $menu->sub_kategori }}"
+                                 onclick="{{ $isHabis ? '' : "bukaModalOpsi('{$menu->id}','".addslashes($menu->nama_menu)."',{$menu->harga},'".($menu->foto ? asset('storage/'.$menu->foto) : '')."','{$menu->tipe_suhu}', '{$menu->kategori}')" }}">
+                                <div class="relative aspect-video w-full bg-gray-100 overflow-hidden flex-shrink-0 border-b border-gray-50">
+                                    @if($menu->foto)
+                                        <img src="{{ asset('storage/'.$menu->foto) }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center"><svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+                                    @endif
+                                    <div class="absolute bottom-2 left-2">
+                                        @if($menu->tipe_suhu === 'panas')
+                                            <span class="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-orange-500 text-white shadow-sm">HOT</span>
+                                        @elseif($menu->tipe_suhu === 'dingin')
+                                            <span class="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-sky-500 text-white shadow-sm">ICE</span>
+                                        @endif
+                                    </div>
+                                    @if($isHabis)
+                                        <div class="absolute inset-0 bg-white/60 flex items-center justify-center">
+                                            <span class="text-[10px] font-semibold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">Habis</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="p-3 flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <p class="text-[10px] text-gray-400 uppercase tracking-wider font-medium mb-0.5">{{ str_replace('_', ' ', $menu->sub_kategori) }}</p>
+                                        <h3 class="text-[13px] font-semibold text-gray-800 line-clamp-2 leading-snug">{{ $menu->nama_menu }}</h3>
+                                    </div>
+                                    <p class="text-[13px] font-bold text-gray-900 mt-2 pt-2 border-t border-gray-50">Rp {{ number_format($menu->harga, 0, ',', '.') }}</p>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="col-span-full py-16 text-center text-[13px] text-gray-400">Belum ada menu tersedia.</div>
+                        @endforelse
+                    </div>
+                </div>
+
+                {{-- ===== SECTION 3: RETAIL (BIJI KOPI) ===== --}}
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <h2 class="text-[13px] font-semibold text-gray-700">Etalase Biji Kopi</h2>
+                        <span class="text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{{ $retails->count() }} item</span>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
+                        @forelse($retails as $retail)
+                            <div class="menu-card bg-white rounded-xl border border-gray-100 overflow-hidden flex flex-col cursor-pointer select-none"
+                                 onclick="bukaModalOpsi('{{ $retail->id }}','{{ addslashes($retail->nama_produk) }}',{{ $retail->harga }},'{{ $retail->foto ? asset('storage/'.$retail->foto) : '' }}','netral','retail','retail')">
+                                <div class="relative aspect-video w-full bg-gray-100 overflow-hidden flex-shrink-0 border-b border-gray-50">
+                                    @if($retail->foto)
+                                        <img src="{{ asset('storage/'.$retail->foto) }}" class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center"><svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+                                    @endif
+                                </div>
+                                <div class="p-3 flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <p class="text-[10px] text-gray-400 uppercase tracking-wider font-medium mb-0.5">Biji Kopi</p>
+                                        <h3 class="text-[13px] font-semibold text-gray-800 line-clamp-2 leading-snug">{{ $retail->nama_produk }}</h3>
+                                        @if($retail->detail_spesifik)
+                                            <p class="text-[10px] text-gray-400 mt-0.5 line-clamp-1">{{ $retail->detail_spesifik }}</p>
+                                        @endif
+                                    </div>
+                                    <p class="text-[13px] font-bold text-gray-900 mt-2 pt-2 border-t border-gray-50">Rp {{ number_format($retail->harga, 0, ',', '.') }}</p>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="col-span-full py-8 text-center text-[13px] text-gray-400">Belum ada produk retail.</div>
+                        @endforelse
+                    </div>
+                </div>
+
             </div>
         </div>
-    </div>
 
     {{-- ===== PANEL KANAN: KERANJANG ===== --}}
     <div class="w-[320px] flex-shrink-0 bg-white border-l border-gray-100 flex flex-col h-full">
@@ -228,16 +298,16 @@
                 </button>
             </div>
             <div class="px-5 py-4">
-                <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
-                    <div id="opsi-foto-wrapper" class="w-full h-40 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 flex items-center justify-center border border-gray-100">
-                    </div>
-                    <div>
-                        <h3 id="opsi-nama-menu" class="text-[18px] font-bold text-gray-900 leading-tight break-words pr-2"></h3>
-                        <p id="opsi-harga-menu" class="text-[12px] text-gray-400 font-medium mt-0.5"></p>
-                    </div>
+                <div class="flex flex-col gap-3 mb-4 pb-4 border-b border-gray-100">
+                <div id="opsi-foto-wrapper" class="w-full h-40 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 flex items-center justify-center border border-gray-100">
                 </div>
+                <div>
+                    <h3 id="opsi-nama-menu" class="text-[18px] font-bold text-gray-900 leading-tight break-words"></h3>
+                    <p id="opsi-harga-menu" class="text-[12px] text-gray-400 font-medium mt-0.5"></p>
+                </div>
+            </div>
                 <form id="form-opsi" onsubmit="event.preventDefault(); simpanKeKeranjang();">
-                    <input type="hidden" id="opsi-id-menu"><input type="hidden" id="opsi-foto-menu"><input type="hidden" id="opsi-harga-asli"><input type="hidden" id="opsi-tipe-suhu">
+                    <input type="hidden" id="opsi-id-menu"><input type="hidden" id="opsi-foto-menu"><input type="hidden" id="opsi-harga-asli"><input type="hidden" id="opsi-tipe-suhu"><input type="hidden" id="opsi-tipe-item" value="menu">
                     <div id="area-suhu" class="mb-4 hidden">
                         <label class="block text-[12px] font-medium text-gray-600 mb-2">Pilih Suhu Penyajian <span class="text-red-400">*</span></label>
                         <div class="grid grid-cols-2 gap-2">
@@ -357,7 +427,7 @@ function filterSubKategori(subKat) {
         aktif.classList.add('bg-[#1a1a2e]','text-white','border-[#1a1a2e]');
         aktif.classList.remove('bg-white','text-gray-500','border-gray-200');
     }
-    document.querySelectorAll('.menu-card').forEach(c => {
+    document.querySelectorAll('.menu-reguler-card').forEach(c => {
         c.style.display = (subKat === 'semua' || c.dataset.subkategori === subKat) ? '' : 'none';
     });
 }
@@ -372,31 +442,24 @@ function filterSubKategori(subKat) {
  * @param {string} tipeSuhu - Tipe suhu dari database (panas, dingin, atau netral)
  * @param {string} kategori - Kategori menu dari database (makanan atau minuman)
  */
-function bukaModalOpsi(id, nama, harga, fotoUrl, tipeSuhu, kategori) {
-    // 1. Mengisi data ke dalam hidden input dan elemen teks
+function bukaModalOpsi(id, nama, harga, fotoUrl, tipeSuhu, kategori, tipeItem = 'menu') {
     document.getElementById('opsi-id-menu').value       = id;
     document.getElementById('opsi-harga-asli').value    = harga;
     document.getElementById('opsi-foto-menu').value     = fotoUrl;
     document.getElementById('opsi-tipe-suhu').value     = tipeSuhu;
+    document.getElementById('opsi-tipe-item').value     = tipeItem;
     document.getElementById('opsi-nama-menu').textContent      = nama;
     document.getElementById('opsi-harga-menu').textContent     = 'Rp ' + parseInt(harga).toLocaleString('id-ID');
     document.getElementById('opsi-catatan').value = '';
 
-    // 2. Menampilkan gambar atau placeholder SVG
     const fw = document.getElementById('opsi-foto-wrapper');
     fw.innerHTML = fotoUrl
         ? `<img src="${fotoUrl}" class="w-full h-full object-cover">`
         : `<svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
 
-    // 3. Logika Pintar: Hanya tampilkan pilihan suhu jika Minuman & Netral
     const areaSuhu = document.getElementById('area-suhu');
-    
-    // Reset radio button
-    document.querySelectorAll('input[name="pilihan_suhu"]').forEach(r => {
-        r.checked = false;
-    });
+    document.querySelectorAll('input[name="pilihan_suhu"]').forEach(r => { r.checked = false; });
 
-    // Validasi apakah perlu menampilkan pilihan suhu
     if (kategori === 'minuman' && tipeSuhu === 'netral') {
         areaSuhu.classList.remove('hidden');
         document.querySelectorAll('input[name="pilihan_suhu"]').forEach(r => r.required = true);
@@ -405,7 +468,6 @@ function bukaModalOpsi(id, nama, harga, fotoUrl, tipeSuhu, kategori) {
         document.querySelectorAll('input[name="pilihan_suhu"]').forEach(r => r.required = false);
     }
 
-    // 4. Munculkan modal
     document.getElementById('modal-opsi-menu').classList.remove('hidden');
     document.getElementById('modal-opsi-menu').scrollTop = 0;
 }
@@ -420,21 +482,20 @@ function simpanKeKeranjang() {
     const harga    = parseInt(document.getElementById('opsi-harga-asli').value);
     const fotoUrl  = document.getElementById('opsi-foto-menu').value;
     const catatan  = document.getElementById('opsi-catatan').value.trim();
+    const tipeItem = document.getElementById('opsi-tipe-item').value;
 
     let suhuPilihan = null;
     const areaSuhu = document.getElementById('area-suhu');
-    
-    // Wajibkan suhu HANYA JIKA area suhu sedang terlihat di layar
     if (!areaSuhu.classList.contains('hidden')) {
         const checked = document.querySelector('input[name="pilihan_suhu"]:checked');
-        if (!checked) { 
-            showToast('Pilih suhu penyajian (Panas/Dingin) terlebih dahulu.', 'error'); 
-            return; 
+        if (!checked) {
+            showToast('Pilih suhu penyajian (Panas/Dingin) terlebih dahulu.', 'error');
+            return;
         }
         suhuPilihan = checked.value;
     }
 
-    keranjang.push({ cart_id: Date.now().toString(), id, nama, harga, fotoUrl, kuantitas: 1, suhu_pilihan: suhuPilihan, catatan });
+    keranjang.push({ cart_id: Date.now().toString(), id, nama, harga, fotoUrl, kuantitas: 1, suhu_pilihan: suhuPilihan, catatan, tipe_item: tipeItem });
     tutupModalOpsi();
     renderKeranjang();
     showToast(`${nama} ditambahkan ke pesanan.`, 'success');
@@ -455,15 +516,19 @@ function getTotal() {
 
 function renderKeranjang() {
     const container = document.getElementById('container-keranjang');
-    const empty     = document.getElementById('keranjang-kosong');
-    container.innerHTML = '';
 
     if (keranjang.length === 0) {
-        container.appendChild(empty);
+        container.innerHTML = `
+            <div id="keranjang-kosong" class="h-full flex flex-col items-center justify-center text-center py-12">
+                <svg class="w-9 h-9 text-gray-200 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                <p class="text-[12px] text-gray-400">Keranjang kosong</p>
+                <p class="text-[11px] text-gray-300 mt-0.5">Pilih menu dari katalog</p>
+            </div>`;
         document.getElementById('txt-total').textContent = 'Rp 0';
         return;
     }
 
+    container.innerHTML = '';
     keranjang.forEach(item => {
         const extra = [
             item.suhu_pilihan ? `<span class="text-[9px] font-semibold border border-gray-200 px-1.5 py-0.5 rounded text-gray-500">${item.suhu_pilihan}</span>` : '',
@@ -575,22 +640,23 @@ async function eksekusiPembayaran() {
         total_pembayaran  : getTotal(),
         metode_pembayaran : metodeBayar,
         items: keranjang.map(i => ({
-            menu_id      : i.id,
-            nama         : i.nama,
-            harga        : i.harga,
-            kuantitas    : i.kuantitas,
-            suhu_pilihan : i.suhu_pilihan,
-            catatan      : i.catatan,
-        }))
+        menu_id      : i.tipe_item === 'retail' ? null : i.id,
+        retail_id    : i.tipe_item === 'retail' ? i.id : null,
+        nama         : i.nama,
+        harga        : i.harga,
+        kuantitas    : i.kuantitas,
+        suhu_pilihan : i.suhu_pilihan,
+        catatan      : i.catatan,
+    }))
     };
 
     try {
         const res = await fetch("{{ route('pos.simpan') }}", {
             method : 'POST',
-            headers: { 
-                'Content-Type' : 'application/json', 
-                'Accept': 'application/json', 
-                'X-CSRF-TOKEN' : document.querySelector('meta[name="csrf-token"]').content 
+            headers: {
+                'Content-Type' : 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN' : document.querySelector('meta[name="csrf-token"]').content
             },
             body: JSON.stringify(payload)
         });
@@ -598,19 +664,21 @@ async function eksekusiPembayaran() {
         const data = await res.json();
 
         if (res.ok && data.success) {
-            // BERSIHKAN KERANJANG KARENA SUDAH BERHASIL MASUK RIWAYAT
+            // 1. Tutup modal & tampilkan toast sukses DULU,
+            //    supaya kasir langsung dapat konfirmasi meski ada error lain setelah ini.
+            tutupModalPembayaran();
+            showToast('Transaksi berhasil disimpan ke riwayat!', 'success');
+
+            // 2. Baru bersihkan keranjang & reset form
             keranjang = [];
             document.getElementById('nama_pelanggan').value = '';
             document.getElementById('nomor_meja').value = '';
             renderKeranjang();
-            tutupModalPembayaran();
-            
-            showToast('Transaksi berhasil disimpan ke riwayat!', 'success');
         } else {
             showToast('Gagal: ' + (data.message || 'Server error'), 'error');
         }
     } catch (err) {
-        console.error("Detail Eror JS:", err); // Ini akan mencatat penyebab pasti di console browser
+        console.error("Detail Eror JS:", err);
         showToast('Kesalahan sistem atau jaringan terputus.', 'error');
     } finally {
         btn.disabled = false;

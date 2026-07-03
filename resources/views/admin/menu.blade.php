@@ -230,7 +230,7 @@
 
                             <div class="mb-4">
                                 <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Kategori</label>
-                                <select name="kategori" required
+                                <select name="kategori"  id="kategori" required
                                     class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-800 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
                                     <option value="makanan" {{ old('kategori') === 'makanan' ? 'selected' : '' }}>Makanan</option>
                                     <option value="minuman" {{ old('kategori') === 'minuman' ? 'selected' : '' }}>Minuman</option>
@@ -239,27 +239,27 @@
 
                             <div class="mb-4">
                                 <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Sub Kategori</label>
-                                <select name="sub_kategori" required
-                                    class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-800 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
-                                    <option value="" disabled selected>Pilih sub kategori...</option>
-                                    <optgroup label="Kategori Makanan">
-                                        <option value="snack" {{ old('sub_kategori') === 'snack' ? 'selected' : '' }}>Snack Kopgun</option>
-                                        <option value="mie" {{ old('sub_kategori') === 'mie' ? 'selected' : '' }}>Mie</option>
-                                        <option value="makanan_berat" {{ old('sub_kategori') === 'makanan_berat' ? 'selected' : '' }}>Makanan Berat</option>
-                                        <option value="roti_bakar" {{ old('sub_kategori') === 'roti_bakar' ? 'selected' : '' }}>Roti Bakar</option>
-                                    </optgroup>
-                                    <optgroup label="Kategori Minuman">
-                                        <option value="signature_coffee" {{ old('sub_kategori') === 'signature_coffee' ? 'selected' : '' }}>Signature Coffee</option>
-                                        <option value="flavor_latte" {{ old('sub_kategori') === 'flavor_latte' ? 'selected' : '' }}>Flavor Latte</option>
-                                        <option value="manual_brew" {{ old('sub_kategori') === 'manual_brew' ? 'selected' : '' }}>Manual Brew</option>
-                                        <option value="soda" {{ old('sub_kategori') === 'soda' ? 'selected' : '' }}>Splitz Soda Base</option>
-                                        <option value="spresso_mixology" {{ old('sub_kategori') === 'spresso_mixology' ? 'selected' : '' }}>Spresso Mixology</option>
-                                        <option value="artisan_tea_mixology" {{ old('sub_kategori') === 'artisan_tea_mixology' ? 'selected' : '' }}>Artisan Tea Mixology</option>
-                                        <option value="espresso_based" {{ old('sub_kategori') === 'espresso_based' ? 'selected' : '' }}>Espresso Based Mixology</option>
-                                        <option value="non_coffee" {{ old('sub_kategori') === 'non_coffee' ? 'selected' : '' }}>Non Coffee</option>
-                                        <option value="milk_based" {{ old('sub_kategori') === 'milk_based' ? 'selected' : '' }}>Milk Based</option>
-                                    </optgroup>
-                                </select>
+                                <select name="sub_kategori" id="sub_kategori" required
+                                class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-800 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
+                                <option value="" disabled selected>Pilih sub kategori...</option>
+                                <optgroup label="Kategori Makanan" data-kategori="makanan">
+                                    <option value="snack" {{ old('sub_kategori') === 'snack' ? 'selected' : '' }}>Snack Kopgun</option>
+                                    <option value="mie" {{ old('sub_kategori') === 'mie' ? 'selected' : '' }}>Mie</option>
+                                    <option value="makanan_berat" {{ old('sub_kategori') === 'makanan_berat' ? 'selected' : '' }}>Makanan Berat</option>
+                                    <option value="roti_bakar" {{ old('sub_kategori') === 'roti_bakar' ? 'selected' : '' }}>Roti Bakar</option>
+                                </optgroup>
+                                <optgroup label="Kategori Minuman" data-kategori="minuman">
+                                    <option value="signature_coffee" {{ old('sub_kategori') === 'signature_coffee' ? 'selected' : '' }}>Signature Coffee</option>
+                                    <option value="flavor_latte" {{ old('sub_kategori') === 'flavor_latte' ? 'selected' : '' }}>Flavor Latte</option>
+                                    <option value="manual_brew" {{ old('sub_kategori') === 'manual_brew' ? 'selected' : '' }}>Manual Brew</option>
+                                    <option value="soda" {{ old('sub_kategori') === 'soda' ? 'selected' : '' }}>Splitz Soda Base</option>
+                                    <option value="spresso_mixology" {{ old('sub_kategori') === 'spresso_mixology' ? 'selected' : '' }}>Spresso Mixology</option>
+                                    <option value="artisan_tea_mixology" {{ old('sub_kategori') === 'artisan_tea_mixology' ? 'selected' : '' }}>Artisan Tea Mixology</option>
+                                    <option value="espresso_based" {{ old('sub_kategori') === 'espresso_based' ? 'selected' : '' }}>Espresso Based Mixology</option>
+                                    <option value="non_coffee" {{ old('sub_kategori') === 'non_coffee' ? 'selected' : '' }}>Non Coffee</option>
+                                    <option value="milk_based" {{ old('sub_kategori') === 'milk_based' ? 'selected' : '' }}>Milk Based</option>
+                                </optgroup>
+                            </select>
                             </div>
 
                             <div class="mb-4">
@@ -282,15 +282,23 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-4">
-                                <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Tipe suhu</label>
-                                <select name="tipe_suhu" required
-                                    class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-800 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
-                                    <option value="netral" {{ old('tipe_suhu') === 'netral' ? 'selected' : '' }}>Netral (cocok di segala cuaca)</option>
-                                    <option value="panas" {{ old('tipe_suhu') === 'panas' ? 'selected' : '' }}>Panas / Hot</option>
-                                    <option value="dingin" {{ old('tipe_suhu') === 'dingin' ? 'selected' : '' }}>Dingin / Ice</option>
-                                </select>
-                            </div>
+                            <div class="mb-5">
+                            <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Tipe suhu</label>
+                            <select name="tipe_suhu" required
+                                class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-800 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
+                                <option value="netral" {{ old('tipe_suhu') === 'netral' ? 'selected' : '' }}>Netral (cocok di segala cuaca)</option>
+                                <option value="panas" {{ old('tipe_suhu') === 'panas' ? 'selected' : '' }}>Panas (direkomendasikan saat cuaca dingin/hujan)</option>
+                                <option value="dingin" {{ old('tipe_suhu') === 'dingin' ? 'selected' : '' }}>Dingin (direkomendasikan saat cuaca panas)</option>
+                            </select>
+                            <p class="text-[11px] text-gray-400 mt-1">
+                                "Panas" → direkomendasikan saat cuaca dingin/hujan.
+                                "Dingin" → direkomendasikan saat cuaca panas.
+                                "Netral" → cocok di segala cuaca, akan selalu tampil di rekomendasi.
+                            </p>
+                            @error('tipe_suhu')
+                                <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
 
                             <div class="mb-5">
                                 <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Status Ketersediaan</label>
@@ -538,25 +546,25 @@
                 <div>
                     <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Sub Kategori</label>
                     <select id="edit_sub_kategori" name="sub_kategori" required
-                        class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
-                        <optgroup label="Kategori Makanan">
-                            <option value="snack">Snack Kopgun</option>
-                            <option value="mie">Mie</option>
-                            <option value="makanan_berat">Makanan Berat</option>
-                            <option value="roti_bakar">Roti Bakar</option>
-                        </optgroup>
-                        <optgroup label="Kategori Minuman">
-                            <option value="signature_coffee">Signature Coffee</option>
-                            <option value="flavor_latte">Flavor Latte</option>
-                            <option value="manual_brew">Manual Brew</option>
-                            <option value="soda">Splitz Soda Base</option>
-                            <option value="spresso_mixology">Spresso Mixology</option>
-                            <option value="artisan_tea_mixology">Artisan Tea Mixology</option>
-                            <option value="espresso_based">Espresso Based Mixology</option>
-                            <option value="non_coffee">Non Coffee</option>
-                            <option value="milk_based">Milk Based</option>
-                        </optgroup>
-                    </select>
+                    class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
+                    <optgroup label="Kategori Makanan" data-kategori="makanan">
+                        <option value="snack">Snack Kopgun</option>
+                        <option value="mie">Mie</option>
+                        <option value="makanan_berat">Makanan Berat</option>
+                        <option value="roti_bakar">Roti Bakar</option>
+                    </optgroup>
+                    <optgroup label="Kategori Minuman" data-kategori="minuman">
+                        <option value="signature_coffee">Signature Coffee</option>
+                        <option value="flavor_latte">Flavor Latte</option>
+                        <option value="manual_brew">Manual Brew</option>
+                        <option value="soda">Splitz Soda Base</option>
+                        <option value="spresso_mixology">Spresso Mixology</option>
+                        <option value="artisan_tea_mixology">Artisan Tea Mixology</option>
+                        <option value="espresso_based">Espresso Based Mixology</option>
+                        <option value="non_coffee">Non Coffee</option>
+                        <option value="milk_based">Milk Based</option>
+                    </optgroup>
+                </select>
                 </div>
 
                 <div>
@@ -577,14 +585,19 @@
                 </div>
 
                 <div>
-                    <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Tipe suhu</label>
-                    <select id="edit_tipe_suhu" name="tipe_suhu" required
-                        class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
-                        <option value="netral">Netral (cocok di segala cuaca)</option>
-                        <option value="panas">Panas / Hot</option>
-                        <option value="dingin">Dingin / Ice</option>
-                    </select>
-                </div>
+                <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Tipe suhu</label>
+                <select id="edit_tipe_suhu" name="tipe_suhu" required
+                    class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
+                    <option value="netral">Netral (cocok di segala cuaca)</option>
+                    <option value="panas">Panas (direkomendasikan saat cuaca dingin/hujan)</option>
+                    <option value="dingin">Dingin (direkomendasikan saat cuaca panas)</option>
+                </select>
+                <p class="text-[11px] text-gray-400 mt-1">
+                    "Panas" → direkomendasikan saat cuaca dingin/hujan.
+                    "Dingin" → direkomendasikan saat cuaca panas.
+                    "Netral" → cocok di segala cuaca, akan selalu tampil di rekomendasi.
+                </p>
+            </div>
 
                 <div>
                     <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Status Ketersediaan</label>
@@ -639,28 +652,75 @@
     }
 
     // Cegah scroll mouse mengubah nilai input number harga
-    document.addEventListener('DOMContentLoaded', () => {
-        ['harga', 'edit_harga'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.addEventListener('wheel', e => e.preventDefault(), { passive: false });
-        });
+   document.addEventListener('DOMContentLoaded', () => {
+    ['harga', 'edit_harga'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('wheel', e => e.preventDefault(), { passive: false });
     });
+
+    // Tambahan baru: filter sub_kategori saat kategori berubah
+    document.getElementById('kategori')?.addEventListener('change', () => {
+        filterSubKategori('kategori', 'sub_kategori');
+    });
+    document.getElementById('edit_kategori')?.addEventListener('change', () => {
+        filterSubKategori('edit_kategori', 'edit_sub_kategori');
+    });
+
+    // Jalankan sekali saat halaman dimuat, untuk form tambah
+    // (menangani kasus validasi gagal dengan old() kategori sudah terisi)
+    filterSubKategori('kategori', 'sub_kategori');
+});
     // Preview file upload (form tambah)
     document.getElementById('foto-upload')?.addEventListener('change', function () {
         const nameEl = document.getElementById('foto-name');
         nameEl.textContent = this.files.length > 0 ? this.files[0].name : '';
         nameEl.classList.toggle('hidden', this.files.length === 0);
     });
+    // Filter optgroup sub_kategori berdasarkan kategori terpilih
+    function filterSubKategori(kategoriId, subKategoriId) {
+        const kategoriValue = document.getElementById(kategoriId).value;
+        const subKategoriSelect = document.getElementById(subKategoriId);
+        const optgroups = subKategoriSelect.querySelectorAll('optgroup');
+
+        let currentValueStillValid = false;
+
+        optgroups.forEach(group => {
+            const groupKategori = group.getAttribute('data-kategori');
+            const isMatch = groupKategori === kategoriValue;
+            group.hidden = !isMatch;
+
+            // Cek apakah option yang sedang terpilih masih ada di optgroup yang cocok
+            if (isMatch) {
+                const options = group.querySelectorAll('option');
+                options.forEach(opt => {
+                    if (opt.value === subKategoriSelect.value) {
+                        currentValueStillValid = true;
+                    }
+                });
+            }
+        });
+
+        // Reset pilihan jika sub_kategori yang sekarang tidak sesuai kategori baru
+        if (!currentValueStillValid) {
+            subKategoriSelect.value = '';
+        }
+    }
 
     // Buka modal edit — parameter sesuai urutan onclick di atas
-    function openEditModal(id, nama, kategori, subKategori, harga, tipeSuhu, status, fotoUrl) {
+       function openEditModal(id, nama, kategori, subKategori, harga, tipeSuhu, status, fotoUrl) {
         document.getElementById('editForm').action = '/admin/menu/' + id;
-        document.getElementById('edit_nama_menu').value   = nama;
-        document.getElementById('edit_kategori').value    = kategori;
+        document.getElementById('edit_nama_menu').value = nama;
+        document.getElementById('edit_kategori').value  = kategori;
+
+        // Filter dulu optgroup-nya sesuai kategori menu ini
+        filterSubKategori('edit_kategori', 'edit_sub_kategori');
+
+        // Baru set value sub_kategori setelah optgroup yang benar sudah ditampilkan
         document.getElementById('edit_sub_kategori').value = subKategori;
-        document.getElementById('edit_harga').value       = harga;
-        document.getElementById('edit_tipe_suhu').value   = tipeSuhu;
-        document.getElementById('edit_status').value      = status;
+
+        document.getElementById('edit_harga').value     = harga;
+        document.getElementById('edit_tipe_suhu').value = tipeSuhu;
+        document.getElementById('edit_status').value    = status;
 
         const previewContainer = document.getElementById('edit_preview_container');
         const previewImg       = document.getElementById('edit_preview_img');
