@@ -8,17 +8,24 @@ use Illuminate\Support\Facades\Log;
 class WeatherService
 {
     const THRESHOLD_CELSIUS = 25;
+    const CITY = 'Bandung';
 
-    public function getCurrentWeather(): ?array
+    public function getCurrentWeather(): array
     {
         // Cache 10 menit -> hemat quota API, tetap terasa real-time
         return Cache::remember('weather_current', now()->addMinutes(10), function () {
+            $weatherData = [
+                'suhu' => null,
+                'kondisi' => 'Tidak Diketahui',
+                'is_offline' => false,
+                'rekomendasi_suhu' => 'netral',
+            ];
+
             try {
                 $response = Http::timeout(5)->get('https://api.openweathermap.org/data/2.5/weather', [
-                    'lat'   => config('services.openweathermap.lat'),
-                    'lon'   => config('services.openweathermap.lon'),
-                    'appid' => config('services.openweathermap.key'),
+                    'q'     => self::CITY,
                     'units' => 'metric',
+                    'appid' => env('OPENWEATHER_API_KEY'),
                 ]);
 
                 if ($response->failed()) {
@@ -26,25 +33,20 @@ class WeatherService
                 }
 
                 $data = $response->json();
+                $suhuAsli = $data['main']['temp'];
 
-                return [
-                    'suhu'      => $data['main']['temp'],
-                    'kondisi'   => $data['weather'][0]['main'] ?? null,
-                    'deskripsi' => $data['weather'][0]['description'] ?? null,
-                ];
+                $weatherData['suhu']     = round($suhuAsli);
+                $weatherData['kondisi']  = $data['weather'][0]['description'] ?? 'Tidak Diketahui';
+                $weatherData['rekomendasi_suhu'] = $suhuAsli < self::THRESHOLD_CELSIUS ? 'panas' : 'dingin';
+
             } catch (\Throwable $e) {
                 Log::warning('Gagal mengambil data cuaca: ' . $e->getMessage());
-                return null; // null = sinyal tidak ada koneksi / API gagal -> fallback ke menu reguler
+                $weatherData['is_offline'] = true;
+                $weatherData['kondisi'] = 'Mode Offline (Tanpa Internet)';
+                $weatherData['rekomendasi_suhu'] = 'netral';
             }
-        });
-    }
 
-    public function getRecommendedTipeSuhu(): ?string
-    {
-        $weather = $this->getCurrentWeather();
-        if (!$weather) {
-            return null;
-        }
-        return $weather['suhu'] >= self::THRESHOLD_CELSIUS ? 'dingin' : 'panas';
+            return $weatherData;
+        });
     }
 }

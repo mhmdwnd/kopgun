@@ -45,33 +45,30 @@
 </div>
 
 {{-- ======================== HEADER ======================== --}}
-<header class="h-14 bg-white border-b border-gray-100 flex items-center justify-between px-6 flex-shrink-0 z-20">
-    <div class="flex items-center gap-3">
-        <a href="{{ route('admin.dashboard') }}" class="w-8 h-8 rounded-lg bg-[#1a1a2e] flex items-center justify-center text-white hover:bg-[#2a2a42] transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-        </a>
+<header class="h-14 bg-white border-b border-gray-100 flex items-center justify-between px-6 flex-shrink-0 z-20 gap-4">
+
+    {{-- KIRI: identitas + aksi navigasi --}}
+    <div class="flex items-center gap-3 flex-shrink-0">
+        <div class="w-11 h-11 rounded-lg bg-[#1A1A2E] flex items-center justify-center flex-shrink-0 p-2">
+            <img src="{{ asset('images/kopgun-logo-icon.png') }}" alt="Kopgun" class="w-full h-full object-contain">
+        </div>
         <div>
             <h1 class="text-[14px] font-semibold text-gray-900 leading-tight">Kopgun POS</h1>
             <p class="text-[11px] text-gray-400">Terminal Kasir</p>
-        </div>
-        
-        {{-- Tombol Riwayat --}}
+    </div>
+
         <button onclick="bukaRiwayat()" class="ml-3 flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 text-[12px] font-medium rounded-lg transition-colors">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Riwayat
         </button>
 
-        {{-- Tombol Keluar (Logout) --}}
-        <form method="POST" action="{{ route('logout') }}" class="ml-1">
-            @csrf
-            <button type="submit" class="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-[12px] font-medium rounded-lg transition-colors">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                Keluar
-            </button>
-        </form>
+        <button onclick="bukaModalKas()" class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[12px] font-medium rounded-lg transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 10v-2m0-8a9 9 0 100 18 9 9 0 000-18z"/></svg>
+            Kas Masuk/Keluar
+        </button>
     </div>
 
-    {{-- Widget Cuaca Context-Aware --}}
+    {{-- TENGAH: widget cuaca --}}
     <div class="flex items-center gap-2.5 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-xl">
         <div class="w-7 h-7 bg-white border border-gray-100 rounded-lg flex items-center justify-center text-[14px]">
             @if($weatherData['rekomendasi_suhu'] === 'panas') ⛅ @else ❄️ @endif
@@ -82,6 +79,17 @@
         </div>
         <span class="w-2 h-2 rounded-full {{ $weatherData['is_offline'] ? 'bg-amber-400 animate-pulse' : 'bg-green-400' }}"></span>
     </div>
+
+    {{--logout--}}
+    <div class="flex items-center flex-shrink-0">
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-[12px] font-medium rounded-lg transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                Keluar
+            </button>
+        </form>
+    </div>
 </header>
 
 {{-- ======================== MAIN WORKSPACE ======================== --}}
@@ -91,7 +99,7 @@
        {{-- ===== PANEL KIRI: KATALOG ===== --}}
         <div class="flex-1 flex flex-col overflow-hidden bg-gray-50 p-4 gap-3">
 
-            {{-- Banner Analisis Cuaca (TIDAK BERUBAH, tetap kode Anda yang sudah ada) --}}
+            {{-- Banner Analisis Cuaca --}}
             <div class="relative bg-gradient-to-r from-[#1a1a2e] to-blue-900 rounded-2xl p-5 shadow-lg overflow-hidden flex-shrink-0">
                 <div class="absolute top-0 right-0 bg-blue-500 text-white text-[9px] font-black tracking-widest px-3 py-1.5 rounded-bl-xl uppercase shadow-md flex items-center gap-1">
                     <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
@@ -120,135 +128,158 @@
                 <div class="absolute -right-4 -bottom-8 w-24 h-24 bg-white opacity-5 rounded-full blur-2xl"></div>
             </div>
 
-            {{-- Satu area scroll untuk ketiga section, supaya kasir scroll dari atas ke bawah secara natural --}}
+            {{-- area scroll --}}
             <div class="flex-1 overflow-y-auto scroll-hide space-y-5">
 
-                {{-- ===== SECTION 1: REKOMENDASI CUACA ===== --}}
-                @if(!$weatherData['is_offline'] && $menuRekomendasi->isNotEmpty())
-                <div>
-                    <div class="flex items-center gap-2 mb-2">
-                        <h2 class="text-[13px] font-semibold text-gray-700">✦ Rekomendasi Hari Ini</h2>
-                        <span class="text-[10px] text-gray-400">
-                            {{ $weatherData['rekomendasi_suhu'] === 'panas' ? 'Cuaca sejuk, cocok yang hangat' : 'Cuaca panas, cocok yang dingin' }}
-                        </span>
-                    </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
-                        @foreach($menuRekomendasi as $menu)
-                            @php $isHabis = $menu->status === 'habis'; @endphp
-                            <div class="menu-card bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 rounded-xl overflow-hidden flex flex-col select-none {{ $isHabis ? 'opacity-50 pointer-events-none' : 'cursor-pointer' }}"
-                                 onclick="{{ $isHabis ? '' : "bukaModalOpsi('{$menu->id}','".addslashes($menu->nama_menu)."',{$menu->harga},'".($menu->foto ? asset('storage/'.$menu->foto) : '')."','{$menu->tipe_suhu}', '{$menu->kategori}')" }}">
-                                <div class="relative aspect-video w-full bg-white/50 overflow-hidden flex-shrink-0 border-b border-amber-100">
-                                    @if($menu->foto)
-                                        <img src="{{ asset('storage/'.$menu->foto) }}" class="w-full h-full object-cover">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center"><svg class="w-8 h-8 text-amber-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
-                                    @endif
-                                    @if($isHabis)
-                                        <div class="absolute inset-0 bg-white/60 flex items-center justify-center">
-                                            <span class="text-[10px] font-semibold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">Habis</span>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="p-3 flex-1 flex flex-col justify-between">
-                                    <div>
-                                        <p class="text-[10px] text-amber-600 uppercase tracking-wider font-medium mb-0.5">{{ str_replace('_', ' ', $menu->sub_kategori) }}</p>
-                                        <h3 class="text-[13px] font-semibold text-gray-800 line-clamp-2 leading-snug">{{ $menu->nama_menu }}</h3>
-                                    </div>
-                                    <p class="text-[13px] font-bold text-gray-900 mt-2 pt-2 border-t border-amber-100">Rp {{ number_format($menu->harga, 0, ',', '.') }}</p>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
+            {{-- KOLOM PENCARIAN GLOBAL --}}
+            <div class="relative group bg-white border border-gray-200 rounded-2xl p-1 shadow-sm transition-all duration-300 hover:border-gray-300 focus-within:border-[#1a1a2e] focus-within:ring-4 focus-within:ring-[#1a1a2e]/10 flex items-center mx-1 mb-2">
+                
+                <!-- Ikon Kaca Pembesar (Berubah warna saat diketik) -->
+                <div class="pl-3 pr-2 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-gray-400 transition-colors duration-300 group-focus-within:text-[#1a1a2e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
                 </div>
-                @endif
-
-                {{-- ===== SECTION 2: MENU REGULER ===== --}}
-                <div>
-                    <h2 class="text-[13px] font-semibold text-gray-700 mb-2">Menu Reguler</h2>
-
-                    <div class="flex items-center gap-2 overflow-x-auto scroll-hide flex-shrink-0 pb-2">
-                        <button onclick="filterSubKategori('semua')" id="btn-tab-semua" class="tab-pill flex-shrink-0 px-4 py-1.5 text-[12px] font-medium rounded-lg border bg-[#1a1a2e] text-white border-[#1a1a2e] transition-all">Semua</button>
-                        @foreach($menusBySubKategori as $subKat => $items)
-                            <button onclick="filterSubKategori('{{ $subKat }}')" id="btn-tab-{{ $subKat }}" class="tab-pill flex-shrink-0 px-4 py-1.5 text-[12px] font-medium rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 transition-all whitespace-nowrap">
-                                {{ ucwords(str_replace('_', ' ', $subKat)) }}
-                            </button>
-                        @endforeach
-                    </div>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
-                        @forelse($menus as $menu)
-                            @php $isHabis = $menu->status === 'habis'; @endphp
-                            <div class="menu-card menu-reguler-card bg-white rounded-xl border border-gray-100 overflow-hidden flex flex-col select-none {{ $isHabis ? 'opacity-50 pointer-events-none' : 'cursor-pointer' }}"
-                                 data-subkategori="{{ $menu->sub_kategori }}"
-                                 onclick="{{ $isHabis ? '' : "bukaModalOpsi('{$menu->id}','".addslashes($menu->nama_menu)."',{$menu->harga},'".($menu->foto ? asset('storage/'.$menu->foto) : '')."','{$menu->tipe_suhu}', '{$menu->kategori}')" }}">
-                                <div class="relative aspect-video w-full bg-gray-100 overflow-hidden flex-shrink-0 border-b border-gray-50">
-                                    @if($menu->foto)
-                                        <img src="{{ asset('storage/'.$menu->foto) }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center"><svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
-                                    @endif
-                                    <div class="absolute bottom-2 left-2">
-                                        @if($menu->tipe_suhu === 'panas')
-                                            <span class="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-orange-500 text-white shadow-sm">HOT</span>
-                                        @elseif($menu->tipe_suhu === 'dingin')
-                                            <span class="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-sky-500 text-white shadow-sm">ICE</span>
-                                        @endif
-                                    </div>
-                                    @if($isHabis)
-                                        <div class="absolute inset-0 bg-white/60 flex items-center justify-center">
-                                            <span class="text-[10px] font-semibold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">Habis</span>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="p-3 flex-1 flex flex-col justify-between">
-                                    <div>
-                                        <p class="text-[10px] text-gray-400 uppercase tracking-wider font-medium mb-0.5">{{ str_replace('_', ' ', $menu->sub_kategori) }}</p>
-                                        <h3 class="text-[13px] font-semibold text-gray-800 line-clamp-2 leading-snug">{{ $menu->nama_menu }}</h3>
-                                    </div>
-                                    <p class="text-[13px] font-bold text-gray-900 mt-2 pt-2 border-t border-gray-50">Rp {{ number_format($menu->harga, 0, ',', '.') }}</p>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="col-span-full py-16 text-center text-[13px] text-gray-400">Belum ada menu tersedia.</div>
-                        @endforelse
-                    </div>
+                
+                <!-- Area Input Teks -->
+                <input type="text" id="input-pencarian" oninput="jalankanFilterPencarian()" placeholder="Cari nama menu atau biji kopi..." class="w-full text-[13px] text-gray-800 bg-transparent py-2 focus:outline-none placeholder-gray-400 font-medium">
+                
+                <!-- Lencana/Badge Visual (Opsional untuk estetika) -->
+                <div class="hidden sm:flex pr-3 flex-shrink-0">
+                    <span class="px-2 py-1 bg-gray-50 border border-gray-200 rounded-lg text-[9px] font-bold text-gray-400 uppercase tracking-wider group-focus-within:bg-[#1a1a2e] group-focus-within:text-white group-focus-within:border-[#1a1a2e] transition-colors">
+                        Cari
+                    </span>
                 </div>
-
-                {{-- ===== SECTION 3: RETAIL (BIJI KOPI) ===== --}}
-                <div>
-                    <div class="flex items-center gap-2 mb-2">
-                        <h2 class="text-[13px] font-semibold text-gray-700">Etalase Biji Kopi</h2>
-                        <span class="text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{{ $retails->count() }} item</span>
-                    </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
-                        @forelse($retails as $retail)
-                            <div class="menu-card bg-white rounded-xl border border-gray-100 overflow-hidden flex flex-col cursor-pointer select-none"
-                                 onclick="bukaModalOpsi('{{ $retail->id }}','{{ addslashes($retail->nama_produk) }}',{{ $retail->harga }},'{{ $retail->foto ? asset('storage/'.$retail->foto) : '' }}','netral','retail','retail')">
-                                <div class="relative aspect-video w-full bg-gray-100 overflow-hidden flex-shrink-0 border-b border-gray-50">
-                                    @if($retail->foto)
-                                        <img src="{{ asset('storage/'.$retail->foto) }}" class="w-full h-full object-cover">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center"><svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
-                                    @endif
-                                </div>
-                                <div class="p-3 flex-1 flex flex-col justify-between">
-                                    <div>
-                                        <p class="text-[10px] text-gray-400 uppercase tracking-wider font-medium mb-0.5">Biji Kopi</p>
-                                        <h3 class="text-[13px] font-semibold text-gray-800 line-clamp-2 leading-snug">{{ $retail->nama_produk }}</h3>
-                                        @if($retail->detail_spesifik)
-                                            <p class="text-[10px] text-gray-400 mt-0.5 line-clamp-1">{{ $retail->detail_spesifik }}</p>
-                                        @endif
-                                    </div>
-                                    <p class="text-[13px] font-bold text-gray-900 mt-2 pt-2 border-t border-gray-50">Rp {{ number_format($retail->harga, 0, ',', '.') }}</p>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="col-span-full py-8 text-center text-[13px] text-gray-400">Belum ada produk retail.</div>
-                        @endforelse
-                    </div>
-                </div>
-
             </div>
+
+            {{-- ===== SECTION 1: REKOMENDASI CUACA (aksen amber/oranye) ===== --}}
+            @if(!$weatherData['is_offline'] && $menuRekomendasi->isNotEmpty())
+            <div class="bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 border border-amber-200/60 rounded-2xl p-4">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center text-[11px] flex-shrink-0">✦</span>
+                    <h2 class="text-[13px] font-bold text-amber-900">Rekomendasi Hari Ini</h2>
+                    <span class="text-[10px] text-amber-700/70">
+                        {{ $weatherData['rekomendasi_suhu'] === 'panas' ? 'Cuaca sejuk, cocok yang hangat' : 'Cuaca panas, cocok yang dingin' }}
+                    </span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
+                    @foreach($menuRekomendasi as $menu)
+                        @php $isHabis = $menu->status === 'habis'; @endphp
+                        <div class="menu-card bg-white border border-amber-200/50 rounded-xl overflow-hidden flex flex-col select-none shadow-sm {{ $isHabis ? 'opacity-50 pointer-events-none' : 'cursor-pointer' }}"
+                             onclick="{{ $isHabis ? '' : "bukaModalOpsi('{$menu->id}','".addslashes($menu->nama_menu)."',{$menu->harga},'".($menu->foto ? asset('storage/'.$menu->foto) : '')."','{$menu->tipe_suhu}', '{$menu->kategori}')" }}">
+                            <div class="relative aspect-video w-full bg-amber-50 overflow-hidden flex-shrink-0 border-b border-amber-100">
+                                @if($menu->foto)
+                                    <img src="{{ asset('storage/'.$menu->foto) }}" class="w-full h-full object-contain p-2">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center"><svg class="w-8 h-8 text-amber-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+                                @endif
+                                @if($isHabis)
+                                    <div class="absolute inset-0 bg-white/60 flex items-center justify-center">
+                                        <span class="text-[10px] font-semibold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">Habis</span>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="p-3 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <p class="text-[10px] text-amber-600 uppercase tracking-wider font-medium mb-0.5">{{ str_replace('_', ' ', $menu->sub_kategori) }}</p>
+                                    <h3 class="text-[13px] font-semibold text-gray-800 line-clamp-2 leading-snug">{{ $menu->nama_menu }}</h3>
+                                </div>
+                                <p class="text-[13px] font-bold text-gray-900 mt-2 pt-2 border-t border-amber-100">Rp {{ number_format($menu->harga, 0, ',', '.') }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            {{-- ===== SECTION 2: MENU REGULER (tenang, tanpa tint — fokus utama) ===== --}}
+            <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                <h2 class="text-[13px] font-bold text-gray-800 mb-3">Menu Reguler</h2>
+
+                <div class="flex items-center gap-2 overflow-x-auto scroll-hide flex-shrink-0 pb-2">
+                    <button onclick="filterSubKategori('semua')" id="btn-tab-semua" class="tab-pill flex-shrink-0 px-4 py-1.5 text-[12px] font-medium rounded-lg border bg-[#1a1a2e] text-white border-[#1a1a2e] transition-all">Semua</button>
+                    @foreach($menusBySubKategori as $subKat => $items)
+                        <button onclick="filterSubKategori('{{ $subKat }}')" id="btn-tab-{{ $subKat }}" class="tab-pill flex-shrink-0 px-4 py-1.5 text-[12px] font-medium rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 transition-all whitespace-nowrap">
+                            {{ ucwords(str_replace('_', ' ', $subKat)) }}
+                        </button>
+                    @endforeach
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
+                    @forelse($menus as $menu)
+                        @php $isHabis = $menu->status === 'habis'; @endphp
+                        <div class="menu-card menu-reguler-card bg-white rounded-xl border border-gray-100 overflow-hidden flex flex-col select-none {{ $isHabis ? 'opacity-50 pointer-events-none' : 'cursor-pointer' }}"
+                             data-subkategori="{{ $menu->sub_kategori }}"
+                             onclick="{{ $isHabis ? '' : "bukaModalOpsi('{$menu->id}','".addslashes($menu->nama_menu)."',{$menu->harga},'".($menu->foto ? asset('storage/'.$menu->foto) : '')."','{$menu->tipe_suhu}', '{$menu->kategori}')" }}">
+                            <div class="relative aspect-video w-full bg-gray-100 overflow-hidden flex-shrink-0 border-b border-gray-50">
+                                @if($menu->foto)
+                                    <img src="{{ asset('storage/'.$menu->foto) }}" class="w-full h-full object-contain p-2 transition-transform duration-300 hover:scale-105">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center"><svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+                                @endif
+                                <div class="absolute bottom-2 left-2">
+                                    @if($menu->tipe_suhu === 'panas')
+                                        <span class="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-orange-500 text-white shadow-sm">HOT</span>
+                                    @elseif($menu->tipe_suhu === 'dingin')
+                                        <span class="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-sky-500 text-white shadow-sm">ICE</span>
+                                    @endif
+                                </div>
+                                @if($isHabis)
+                                    <div class="absolute inset-0 bg-white/60 flex items-center justify-center">
+                                        <span class="text-[10px] font-semibold text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">Habis</span>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="p-3 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <p class="text-[10px] text-gray-400 uppercase tracking-wider font-medium mb-0.5">{{ str_replace('_', ' ', $menu->sub_kategori) }}</p>
+                                    <h3 class="text-[13px] font-semibold text-gray-800 line-clamp-2 leading-snug">{{ $menu->nama_menu }}</h3>
+                                </div>
+                                <p class="text-[13px] font-bold text-gray-900 mt-2 pt-2 border-t border-gray-50">Rp {{ number_format($menu->harga, 0, ',', '.') }}</p>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-span-full py-16 text-center text-[13px] text-gray-400">Belum ada menu tersedia.</div>
+                    @endforelse
+                </div>
+            </div>
+
+            {{-- ===== SECTION 3: RETAIL / BIJI KOPI  ===== --}}
+            <div class="bg-gradient-to-br from-stone-100 via-stone-50 to-stone-200 border border-stone-300/50 rounded-2xl p-4">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="w-6 h-6 rounded-full bg-stone-700 text-white flex items-center justify-center text-[11px] flex-shrink-0">☕</span>
+                    <h2 class="text-[13px] font-bold text-stone-800">Etalase Biji Kopi</h2>
+                    <span class="text-[10px] text-stone-600 bg-stone-200/70 px-2 py-0.5 rounded-full">{{ $retails->count() }} item</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
+                    @forelse($retails as $retail)
+                        <div class="menu-card bg-white border border-stone-200 rounded-xl overflow-hidden flex flex-col cursor-pointer select-none shadow-sm"
+                             onclick="bukaModalOpsi('{{ $retail->id }}','{{ addslashes($retail->nama_produk) }}',{{ $retail->harga }},'{{ $retail->foto ? asset('storage/'.$retail->foto) : '' }}','netral','retail','retail')">
+                            <div class="relative aspect-video w-full bg-stone-100 overflow-hidden flex-shrink-0 border-b border-stone-100">
+                                @if($retail->foto)
+                                    <img src="{{ asset('storage/'.$retail->foto) }}" class="w-full h-full object-contain p-2">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center"><svg class="w-8 h-8 text-stone-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+                                @endif
+                            </div>
+                            <div class="p-3 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <p class="text-[10px] text-stone-500 uppercase tracking-wider font-medium mb-0.5">Biji Kopi</p>
+                                    <h3 class="text-[13px] font-semibold text-gray-800 line-clamp-2 leading-snug">{{ $retail->nama_produk }}</h3>
+                                    @if($retail->detail_spesifik)
+                                        <p class="text-[10px] text-gray-400 mt-0.5 line-clamp-1">{{ $retail->detail_spesifik }}</p>
+                                    @endif
+                                </div>
+                                <p class="text-[13px] font-bold text-gray-900 mt-2 pt-2 border-t border-stone-100">Rp {{ number_format($retail->harga, 0, ',', '.') }}</p>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-span-full py-8 text-center text-[13px] text-gray-400">Belum ada produk retail.</div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+           
         </div>
 
     {{-- ===== PANEL KANAN: KERANJANG ===== --}}
@@ -391,6 +422,51 @@
         </div>
     </div>
 </div>
+{{-- ======================== MODAL: KAS MASUK/KELUAR ======================== --}}
+<div id="modal-kas" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onclick="tutupModalKas()"></div>
+    <div class="relative z-10 flex justify-center px-4 py-10 min-h-full">
+        <div class="modal-panel bg-white rounded-xl border border-gray-100 shadow-2xl w-full max-w-sm h-fit">
+            <div class="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
+                <h2 class="text-[13px] font-semibold text-gray-800">Catat Kas Masuk/Keluar</h2>
+                <button onclick="tutupModalKas()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="px-5 py-4 space-y-4">
+                <div>
+                    <label class="block text-[12px] font-medium text-gray-600 mb-2">Jenis</label>
+                    <div class="grid grid-cols-3 gap-2">
+                    <button type="button" onclick="pilihTipeKas('modal')" data-tipe-kas="modal" class="tipe-kas-btn flex flex-col items-center justify-center gap-1 py-2.5 rounded-lg border border-gray-200 bg-white text-gray-500 text-[10.5px] font-medium transition-all hover:bg-gray-50">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        Modal Awal
+                    </button>
+                    <button type="button" onclick="pilihTipeKas('masuk')" data-tipe-kas="masuk" class="tipe-kas-btn flex flex-col items-center justify-center gap-1 py-2.5 rounded-lg border text-[10.5px] font-medium transition-all bg-emerald-600 text-white border-emerald-600">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8l-8 8-8-8"/></svg>
+                        Kas Masuk
+                    </button>
+                    <button type="button" onclick="pilihTipeKas('keluar')" data-tipe-kas="keluar" class="tipe-kas-btn flex flex-col items-center justify-center gap-1 py-2.5 rounded-lg border border-gray-200 bg-white text-gray-500 text-[10.5px] font-medium transition-all hover:bg-gray-50">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20V4m-8 8l8-8 8 8"/></svg>
+                        Kas Keluar
+                    </button>
+                </div>
+                </div>
+                <div>
+                    <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Nominal (Rp) <span class="text-red-400">*</span></label>
+                    <input id="kas-jumlah" type="number" min="1" placeholder="0" class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
+                </div>
+                <div>
+                    <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Keterangan <span class="text-red-400">*</span></label>
+                    <textarea id="kas-keterangan" rows="2" placeholder="Cth: beli galon air, setor ke bank..." class="w-full text-[12px] px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition resize-none"></textarea>
+                </div>
+            </div>
+            <div class="flex gap-2.5 px-5 pb-5">
+                <button onclick="tutupModalKas()" class="flex-1 border border-gray-200 text-gray-500 text-[13px] py-2.5 rounded-lg hover:bg-gray-50 transition-colors">Batal</button>
+                <button id="btn-simpan-kas" onclick="simpanKas()" class="flex-1 bg-[#1a1a2e] hover:bg-[#2a2a42] text-white text-[13px] font-semibold py-2.5 rounded-lg transition-colors">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 {{-- ======================== CORE JAVASCRIPT ======================== --}}
 <script>
@@ -454,7 +530,7 @@ function bukaModalOpsi(id, nama, harga, fotoUrl, tipeSuhu, kategori, tipeItem = 
 
     const fw = document.getElementById('opsi-foto-wrapper');
     fw.innerHTML = fotoUrl
-        ? `<img src="${fotoUrl}" class="w-full h-full object-cover">`
+        ? `<img src="${fotoUrl}" class="w-full h-full object-contain p-2">`
         : `<svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
 
     const areaSuhu = document.getElementById('area-suhu');
@@ -686,7 +762,7 @@ async function eksekusiPembayaran() {
     }
 }
 
-// ─── FUNGSI CETAK STRUK THERMAL ──────────────────────────────────────────────
+{{--==FUNGSI CETAK STRUK THERMAL--==}} 
 function cetakStruk(data) {
     const tgl = new Date().toLocaleString('id-ID', { dateStyle:'short', timeStyle:'short' });
     let baris = '';
@@ -730,7 +806,7 @@ function cetakStruk(data) {
     setTimeout(() => window.print(), 100);
 }
 
-// ─── RIWAYAT TRANSAKSI HARI INI ──────────────────────────────────────────────────
+{{--==Riwayat==--}}
 async function bukaRiwayat() {
     document.getElementById('modal-riwayat').classList.remove('hidden');
     document.getElementById('modal-riwayat').scrollTop = 0;
@@ -745,24 +821,64 @@ async function bukaRiwayat() {
         if (!data.length) { container.innerHTML = '<p class="text-center text-gray-400 py-10 text-[13px]">Belum ada transaksi hari ini.</p>'; return; }
 
         container.innerHTML = '';
-        data.forEach(trx => {
+        data.forEach(item => {
+            if (item.tipe_riwayat === 'kas') {
+            let warna, label, ikon, tandaOperator;
+
+            if (item.tipe_kas === 'modal') {
+                warna = { border: 'border-blue-100', bg: 'bg-blue-50', text: 'text-blue-600' };
+                label = 'Modal Awal';
+                ikon  = '●';
+                tandaOperator = '';
+            } else if (item.tipe_kas === 'masuk') {
+                warna = { border: 'border-emerald-100', bg: 'bg-emerald-50', text: 'text-emerald-600' };
+                label = 'Kas Masuk';
+                ikon  = '↓';
+                tandaOperator = '+';
+            } else {
+                warna = { border: 'border-red-100', bg: 'bg-red-50', text: 'text-red-600' };
+                label = 'Kas Keluar';
+                ikon  = '↑';
+                tandaOperator = '−';
+            }
+
+            container.insertAdjacentHTML('beforeend', `
+                <div class="bg-white border ${warna.border} rounded-xl p-4">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg ${warna.bg} ${warna.text} flex items-center justify-center text-[12px] font-bold flex-shrink-0">${ikon}</span>
+                            <div>
+                                <p class="text-[13px] font-semibold text-gray-800">${label}</p>
+                                <p class="text-[11px] text-gray-400 mt-0.5">${item.keterangan}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[14px] font-bold ${warna.text}">${tandaOperator} Rp ${parseInt(item.jumlah).toLocaleString('id-ID')}</p>
+                            <p class="text-[10px] text-gray-400 mt-0.5">${item.created_at}</p>
+                        </div>
+                    </div>
+                </div>`);
+            return;
+        }
+            
+
             let detail = '';
-            trx.items.forEach(item => {
-                const suhu = item.suhu_pilihan ? ` [${item.suhu_pilihan}]` : '';
-                const note = item.catatan ? ` <em style="font-size:10px">(${item.catatan})</em>` : '';
-                detail += `<div class="flex justify-between text-[11px] text-gray-500 mt-1"><span>${item.kuantitas}× ${item.nama}${suhu}${note}</span><span class="font-medium flex-shrink-0 ml-2">Rp ${(item.harga * item.kuantitas).toLocaleString('id-ID')}</span></div>`;
+            item.items.forEach(i => {
+                const suhu = i.suhu_pilihan ? ` [${i.suhu_pilihan}]` : '';
+                const note = i.catatan ? ` <em style="font-size:10px">(${i.catatan})</em>` : '';
+                detail += `<div class="flex justify-between text-[11px] text-gray-500 mt-1"><span>${i.kuantitas}× ${i.nama}${suhu}${note}</span><span class="font-medium flex-shrink-0 ml-2">Rp ${(i.harga * i.kuantitas).toLocaleString('id-ID')}</span></div>`;
             });
 
             container.insertAdjacentHTML('beforeend', `
                 <div class="bg-white border border-gray-100 rounded-xl p-4">
                     <div class="flex justify-between items-start pb-2 mb-2 border-b border-gray-50">
                         <div>
-                            <p class="text-[13px] font-semibold text-gray-800">Meja ${trx.nomor_meja} · ${trx.nama_pelanggan}</p>
-                            <p class="text-[11px] text-gray-400 mt-0.5">${trx.created_at ?? ''}</p>
+                            <p class="text-[13px] font-semibold text-gray-800">Meja ${item.nomor_meja} · ${item.nama_pelanggan}</p>
+                            <p class="text-[11px] text-gray-400 mt-0.5">${item.created_at}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-[14px] font-bold text-gray-900">Rp ${parseInt(trx.total_pembayaran).toLocaleString('id-ID')}</p>
-                            <span class="text-[10px] font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">${trx.metode_pembayaran.toUpperCase()}</span>
+                            <p class="text-[14px] font-bold text-gray-900">Rp ${parseInt(item.total_pembayaran).toLocaleString('id-ID')}</p>
+                            <span class="text-[10px] font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">${item.metode_pembayaran.toUpperCase()}</span>
                         </div>
                     </div>
                     <div>${detail}</div>
@@ -770,12 +886,141 @@ async function bukaRiwayat() {
         });
     } catch(e) { container.innerHTML = `<p class="text-center text-red-400 py-10 text-[13px]">Gagal memuat riwayat: ${e.message}</p>`; }
 }
+
 function tutupRiwayat() { document.getElementById('modal-riwayat').classList.add('hidden'); }
 
+let tipeKasAktif = 'masuk';
+
+function bukaModalKas() {
+    document.getElementById('kas-jumlah').value = '';
+    document.getElementById('kas-keterangan').value = '';
+    pilihTipeKas('masuk');
+    document.getElementById('modal-kas').classList.remove('hidden');
+    document.getElementById('modal-kas').scrollTop = 0;
+}
+
+function tutupModalKas() {
+    document.getElementById('modal-kas').classList.add('hidden');
+}
+
+function pilihTipeKas(tipe) {
+    tipeKasAktif = tipe;
+    const warnaAktif = {
+        modal:  ['bg-blue-600', 'border-blue-600'],
+        masuk:  ['bg-emerald-600', 'border-emerald-600'],
+        keluar: ['bg-red-600', 'border-red-600'],
+    };
+
+    document.querySelectorAll('.tipe-kas-btn').forEach(btn => {
+        const btnTipe = btn.dataset.tipeKas;
+        const isIni   = btnTipe === tipe;
+
+        Object.values(warnaAktif).flat().forEach(cls => btn.classList.remove(cls));
+
+        if (isIni) {
+            btn.classList.add(...warnaAktif[btnTipe], 'text-white');
+            btn.classList.remove('bg-white', 'text-gray-500', 'border-gray-200');
+        } else {
+            btn.classList.add('bg-white', 'text-gray-500', 'border-gray-200');
+            btn.classList.remove('text-white');
+        }
+    });
+}
+
+async function simpanKas() {
+    const jumlah     = parseInt(document.getElementById('kas-jumlah').value, 10) || 0;
+    const keterangan = document.getElementById('kas-keterangan').value.trim();
+
+    if (jumlah <= 0)   { showToast('Nominal harus diisi dan lebih dari 0.', 'error'); return; }
+    if (!keterangan)   { showToast('Keterangan wajib diisi.', 'error'); return; }
+
+    const btn = document.getElementById('btn-simpan-kas');
+    btn.disabled = true;
+    btn.textContent = 'Menyimpan...';
+
+    try {
+        const res = await fetch("{{ route('pos.kas') }}", {
+            method : 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ tipe: tipeKasAktif, jumlah, keterangan })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            tutupModalKas();
+            showToast(`Kas ${tipeKasAktif} berhasil dicatat.`, 'success');
+        } else {
+            showToast('Gagal: ' + (data.message || 'Server error'), 'error');
+        }
+    } catch (err) {
+        console.error('Detail Eror JS:', err);
+        showToast('Kesalahan sistem atau jaringan terputus.', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Simpan';
+    }
+}
+let stateKategoriAktif = 'semua';
+
+function filterSubKategori(subKat) {
+    stateKategoriAktif = subKat;
+    
+    // Ubah warna tombol tab
+    document.querySelectorAll('.tab-pill').forEach(btn => {
+        btn.classList.remove('bg-[#1a1a2e]','text-white','border-[#1a1a2e]');
+        btn.classList.add('bg-white','text-gray-500','border-gray-200');
+    });
+    
+    const aktif = document.getElementById('btn-tab-' + subKat);
+    if (aktif) {
+        aktif.classList.add('bg-[#1a1a2e]','text-white','border-[#1a1a2e]');
+        aktif.classList.remove('bg-white','text-gray-500','border-gray-200');
+    }
+    
+    // Kosongkan kolom teks setiap kali kasir berpindah tab (opsional)
+    const inputSearch = document.getElementById('input-pencarian');
+    if (inputSearch) inputSearch.value = '';
+    
+    jalankanFilterPencarian();
+}
+
+function jalankanFilterPencarian() {
+    const input = document.getElementById('input-pencarian');
+    const query = input ? input.value.toLowerCase() : '';
+    
+    document.querySelectorAll('.menu-card').forEach(card => {
+        // Ambil teks dari elemen h3 dengan aman
+        const elemenJudul = card.querySelector('h3');
+        if (!elemenJudul) return; 
+        
+        const namaMenu = elemenJudul.textContent.toLowerCase();
+        const cocokTeks = namaMenu.includes(query);
+        
+        // Logika untuk Menu Reguler (punya class menu-reguler-card)
+        if (card.classList.contains('menu-reguler-card')) {
+            if (query !== '') {
+                // JIKA SEDANG MENCARI TEKS: Tampilkan semua yang namanya cocok (abaikan tab kategori)
+                card.style.display = cocokTeks ? '' : 'none';
+            } else {
+                // JIKA TEKS KOSONG: Tampilkan sesuai tab kategori yang sedang diklik
+                const cocokKategori = (stateKategoriAktif === 'semua' || card.dataset.subkategori === stateKategoriAktif);
+                card.style.display = cocokKategori ? '' : 'none';
+            }
+        } 
+        // Logika untuk Menu Rekomendasi Cuaca dan Retail
+        else {
+            card.style.display = cocokTeks ? '' : 'none';
+        }
+    });
+}
 // Escape button menutupi semua jendela modal terbuka
 document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
-    ['modal-opsi-menu','modal-pembayaran','modal-riwayat'].forEach(id => document.getElementById(id).classList.add('hidden'));
+    ['modal-opsi-menu','modal-pembayaran','modal-riwayat', 'modal-kas'].forEach(id => document.getElementById(id).classList.add('hidden'));
 });
 </script>
 </body>

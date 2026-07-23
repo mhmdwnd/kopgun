@@ -18,6 +18,7 @@ class MenuController extends Controller
     {
     	$request->validate([
 	    'nama_menu'    => 'required|string|max:255',
+	    'deskripsi' => 'nullable|string|max:1000',
 	    'kategori'     => 'required|in:makanan,minuman',
 	    'sub_kategori' => [
 	        'required',
@@ -42,6 +43,7 @@ class MenuController extends Controller
 
     Menu::create([
     	'nama_menu'=> $request->nama_menu,
+    	'deskripsi' =>$request->deskripsi,
     	'kategori' => $request->kategori,
     	'sub_kategori' => $request->sub_kategori,
     	'harga' => $request->harga,
@@ -93,6 +95,7 @@ class MenuController extends Controller
 		}
 		$menu->update([
 			'nama_menu' => $request->nama_menu,
+			'deskripsi' =>$request->deskripsi,
 			'kategori' => $request->kategori,
 			'sub_kategori' =>$request->sub_kategori,
 			'harga' => $request->harga,

@@ -5,88 +5,160 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Etalase Biji Kopi — Kopgun Admin</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+   @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        /* Row hover: slide-in aksen kiri, sama seperti Kelola Menu */
+        .menu-row {
+            position: relative;
+            transition: background 0.15s;
+        }
+        .menu-row::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #2C4870;
+            border-radius: 0 2px 2px 0;
+            transform: scaleY(0);
+            transform-origin: center;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .menu-row:hover::before {
+            transform: scaleY(1);
+        }
+        .menu-row:hover {
+            background: #f9fafb;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 font-sans antialiased text-gray-800">
 
 <div class="flex h-screen overflow-hidden">
 
     {{-- ======================== SIDEBAR ======================== --}}
-    <aside class="w-[220px] flex-shrink-0 bg-white border-r border-gray-100 flex flex-col">
+    <aside class="w-[220px] flex-shrink-0 bg-[#1A1A2E] border-r border-[#2A2A48] flex flex-col">
 
-        {{-- Logo --}}
-        <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-100">
-            <div class="w-9 h-9 rounded-lg bg-[#1a1a2e] flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                </svg>
+    {{-- Logo --}}
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-[#2A2A48]">
+        <div class="w-9 h-9 rounded-lg bg-[#2C4870] flex items-center justify-center flex-shrink-0 p-1.5">
+            <img src="{{ asset('images/kopgun-logo-icon.png') }}" alt="Kopgun" class="w-full h-full object-contain">
+        </div>
+        <div>
+            <p class="text-sm font-semibold text-white leading-tight">Kopgun</p>
+            <p class="text-[11px] text-slate-400">Admin Panel</p>
+        </div>
+    </div>
+
+    {{-- Nav --}}
+    <nav class="flex-1 px-3 py-4 overflow-y-auto space-y-0.5">
+
+        <p class="px-2 pt-1 pb-1.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Utama</p>
+
+        <a href="{{ route('admin.dashboard') }}"
+            class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-slate-400 hover:bg-white/5 hover:text-white transition-colors">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            Dashboard
+        </a>
+
+        <p class="px-2 pt-4 pb-1.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Aplikasi</p>
+
+        <a href="{{ route('admin.menu.index') }}"
+            class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-slate-400 hover:bg-white/5 hover:text-white transition-colors">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M4 6h16M4 10h16M4 14h16M4 18h16"/>
+            </svg>
+            Kelola Menu
+        </a>
+
+        <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-slate-400 hover:bg-white/5 hover:text-white transition-colors">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            Pesanan
+        </a>
+
+        <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-slate-400 hover:bg-white/5 hover:text-white transition-colors">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+            </svg>
+            Kategori
+        </a>
+
+        <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-slate-400 hover:bg-white/5 hover:text-white transition-colors">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18M10 3v18M14 3v18"/>
+            </svg>
+            Meja
+        </a>
+
+        <p class="px-2 pt-4 pb-1.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Konten Publik</p>
+
+        <a href="{{ route('admin.event.index') }}"
+            class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-slate-400 hover:bg-white/5 hover:text-white transition-colors">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            Kelola Event
+        </a>
+
+        <a href="{{ route('admin.area.index') }}"
+            class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-slate-400 hover:bg-white/5 hover:text-white transition-colors">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7l9-4 9 4-9 4-9-4zm0 6l9 4 9-4M3 13v6l9 4 9-4v-6"/>
+            </svg>
+            Kelola Area
+        </a>
+
+        <p class="px-2 pt-4 pb-1.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Retail</p>
+
+        {{-- ETALASE RETAIL (AKTIF) --}}
+        <a href="{{ route('admin.retail.index') }}"
+            class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-semibold bg-[#2C4870]/30 text-[#9DBADD] border border-[#2C4870]/50 transition-colors">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+            Etalase Biji Kopi
+        </a>
+
+        <p class="px-2 pt-4 pb-1.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Laporan</p>
+
+        <a href="{{ route('admin.laporan.index') }}"
+            class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-slate-400 hover:bg-white/5 hover:text-white transition-colors">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+            Laporan Penjualan
+        </a>
+
+    </nav>
+
+    {{-- User --}}
+    <div class="px-3 py-4 border-t border-[#2A2A48]">
+        <div class="flex items-center gap-2.5 px-3 py-2">
+            <div class="w-7 h-7 rounded-full bg-[#2C4870] flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0">
+                {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
             </div>
-            <div>
-                <p class="text-sm font-semibold text-gray-900 leading-tight">Kopgun</p>
-                <p class="text-[11px] text-gray-400">Admin Panel</p>
+            <div class="min-w-0 flex-1">
+                <p class="text-[12px] font-medium text-white truncate">{{ auth()->user()->name ?? 'Admin' }}</p>
             </div>
         </div>
-
-        {{-- Nav --}}
-        <nav class="flex-1 px-3 py-4 overflow-y-auto space-y-0.5">
-
-            <p class="px-2 pt-1 pb-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Utama</p>
-
-            <a href="{{ route('admin.dashboard') }}"
-                class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-colors">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="w-full mt-1 flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] text-slate-400 hover:bg-white/5 hover:text-slate-200 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                 </svg>
-                Dashboard
-            </a>
+                Keluar
+            </button>
+        </form>
+    </div>
 
-            <p class="px-2 pt-4 pb-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Aplikasi</p>
-
-            {{-- KELOLA MENU (TIDAK AKTIF) --}}
-            <a href="{{ route('admin.menu.index') }}"
-                class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-colors">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M4 6h16M4 10h16M4 14h16M4 18h16"/>
-                </svg>
-                Kelola Menu
-            </a>
-
-            <p class="px-2 pt-4 pb-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Retail</p>
-            
-            {{-- ETALASE RETAIL (AKTIF) --}}
-            <a href="{{ route('admin.retail.index') }}"
-                class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium bg-[#1a1a2e] text-white transition-colors">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                </svg>
-                Etalase Biji Kopi
-            </a>
-
-        </nav>
-
-        {{-- User --}}
-        <div class="px-3 py-4 border-t border-gray-100">
-            <div class="flex items-center gap-2.5 px-3 py-2">
-                <div class="w-7 h-7 rounded-full bg-[#1a1a2e] flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0">
-                    {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
-                </div>
-                <div class="min-w-0 flex-1">
-                    <p class="text-[12px] font-medium text-gray-800 truncate">{{ auth()->user()->name ?? 'Admin' }}</p>
-                </div>
-            </div>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="w-full mt-1 flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] text-gray-400 hover:bg-gray-50 hover:text-gray-700 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                    </svg>
-                    Keluar
-                </button>
-            </form>
-        </div>
-
-    </aside>
-
+</aside>
     {{-- ======================== MAIN ======================== --}}
     <div class="flex-1 flex flex-col overflow-hidden">
 
@@ -129,7 +201,7 @@
                                 <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Nama produk</label>
                                 <input type="text" name="nama_produk" value="{{ old('nama_produk') }}" required
                                     placeholder="cth. Arabica Gayo 200gr"
-                                    class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
+                                    class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white focus:outline-none focus:border-[#2C4870] focus:ring-2 focus:ring-[#E7EEF6] transition">
                             </div>
 
                             {{-- Harga --}}
@@ -137,7 +209,7 @@
                                 <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Harga (Rp)</label>
                                 <input type="number" name="harga" value="{{ old('harga') }}" required min="0"
                                     placeholder="0"
-                                    class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
+                                    class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white focus:outline-none focus:border-[#2C4870] focus:ring-2 focus:ring-[#E7EEF6] transition">
                             </div>
 
                             {{-- Detail Spesifik --}}
@@ -145,7 +217,7 @@
                                 <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Detail / Notes (Opsional)</label>
                                 <input type="text" name="detail_spesifik" value="{{ old('detail_spesifik') }}"
                                     placeholder="cth. Medium Roast, Fruity"
-                                    class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white focus:outline-none focus:border-[#1a1a2e] focus:ring-2 focus:ring-[#1a1a2e]/10 transition">
+                                    class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white focus:outline-none focus:border-[#2C4870] focus:ring-2 focus:ring-[#E7EEF6] transition">
                             </div>
 
                             {{-- Upload Foto --}}
@@ -195,7 +267,7 @@
                             </thead>
                             <tbody class="divide-y divide-gray-50">
                                 @forelse($retails as $retail)
-                                    <tr class="hover:bg-gray-50/60 transition-colors">
+                                    <tr class="menu-row">
 
                                         {{-- Foto --}}
                                         <td class="px-5 py-3.5">
@@ -233,13 +305,13 @@
                                         <td class="px-5 py-3.5">
                                             <div class="flex items-center justify-end gap-2">
                                                 {{-- Tombol Edit (Pemicu Modal) --}}
-                                                <button type="button" 
+                                                <button type="button"
                                                     onclick="openEditModal('{{ $retail->id }}', '{{ addslashes($retail->nama_produk) }}', '{{ $retail->harga }}', '{{ addslashes($retail->detail_spesifik ?? '') }}', '{{ $retail->foto ? asset('storage/' . $retail->foto) : '' }}')"
                                                     class="inline-flex items-center gap-1.5 text-[12px] text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                                     Ubah
                                                 </button>
-                                                
+
                                                 {{-- Form Delete --}}
                                                 <form action="{{ route('admin.retail.destroy', $retail->id) }}" method="POST"
                                                     onsubmit="return confirm('Hapus produk {{ addslashes($retail->nama_produk) }}?')">
@@ -297,17 +369,17 @@
 
                 <div class="mb-4">
                     <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Nama produk</label>
-                    <input type="text" id="edit_nama_produk" name="nama_produk" required class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#1a1a2e]/10">
+                    <input type="text" id="edit_nama_produk" name="nama_produk" required class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-[#2C4870] focus:ring-2 focus:ring-[#E7EEF6]">
                 </div>
 
                 <div class="mb-4">
                     <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Harga (Rp)</label>
-                    <input type="number" id="edit_harga" name="harga" required class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#1a1a2e]/10">
+                    <input type="number" id="edit_harga" name="harga" required class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-[#2C4870] focus:ring-2 focus:ring-[#E7EEF6]">
                 </div>
 
                 <div class="mb-4">
                     <label class="block text-[12px] font-medium text-gray-600 mb-1.5">Detail / Notes (Opsional)</label>
-                    <input type="text" id="edit_detail_spesifik" name="detail_spesifik" class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#1a1a2e]/10">
+                    <input type="text" id="edit_detail_spesifik" name="detail_spesifik" class="w-full text-[13px] px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-[#2C4870] focus:ring-2 focus:ring-[#E7EEF6]">
                 </div>
 
                 <div class="mb-5">
@@ -328,7 +400,6 @@
 </div>
 
 <script>
-    // Preview nama file upload baru
     document.getElementById('foto-upload')?.addEventListener('change', function () {
         const nameEl = document.getElementById('foto-name');
         if (this.files.length > 0) {
@@ -339,20 +410,16 @@
         }
     });
 
-    // Fungsi Buka Modal Edit Retail
     function openEditModal(id, nama, harga, detail, fotoUrl) {
-        // Atur jalur form agar sesuai dengan ID produk retail
         document.getElementById('editForm').action = '/admin/retail/' + id;
-        
-        // Isi input form di dalam modal
+
         document.getElementById('edit_nama_produk').value = nama;
         document.getElementById('edit_harga').value = harga;
         document.getElementById('edit_detail_spesifik').value = detail;
 
-        // Tangani pratinjau gambar lama
         const previewContainer = document.getElementById('edit_preview_container');
         const previewImg = document.getElementById('edit_preview_img');
-        
+
         if (fotoUrl) {
             previewImg.src = fotoUrl;
             previewContainer.classList.remove('hidden');
@@ -360,11 +427,9 @@
             previewContainer.classList.add('hidden');
         }
 
-        // Buka modal
         document.getElementById('editModal').classList.remove('hidden');
     }
 
-    // Fungsi Tutup Modal
     function closeEditModal() {
         document.getElementById('editModal').classList.add('hidden');
     }

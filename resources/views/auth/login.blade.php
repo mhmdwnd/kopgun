@@ -10,14 +10,12 @@
 
     {{-- Sisi Kiri: Branding --}}
     <div class="hidden lg:flex lg:w-1/2 bg-[#1a1a2e] flex-col justify-between p-12">
-        <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                </svg>
-            </div>
-            <span class="text-white font-semibold text-[15px]">Kopgun</span>
-        </div>
+       <div class="flex items-center gap-3">
+       <div class="w-16 h-16 rounded-lg bg-white/10 flex items-center justify-center p-3">
+        <img src="{{ asset('images/kopgun-logo-icon.png') }}" alt="Kopgun" class="w-full h-full object-contain">
+    </div>
+        <span class="text-white font-semibold text-[15px]">Kopgun</span>
+    </div>
 
         <div>
             <h1 class="text-white text-3xl font-semibold leading-snug mb-4">
@@ -38,18 +36,11 @@
     {{-- Sisi Kanan: Form --}}
     <div class="flex-1 flex items-center justify-center px-6 py-12">
         <div class="w-full max-w-sm">
-
             {{-- Logo Mobile --}}
-            <div class="flex items-center gap-2.5 mb-8 lg:hidden">
-                <div class="w-8 h-8 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                </div>
-                <span class="text-gray-900 font-semibold text-[15px]">Kopgun</span>
-            </div>
-
-            <div class="mb-7">
+            <div class="flex justify-center mb-8 lg:hidden">
+    <img src="{{ asset('images/kopgun-logo-full.png') }}" alt="Kopgun" class="h-28 w-auto object-contain">
+</div>      
+                            <div class="mb-7">
                 <h2 class="text-[22px] font-semibold text-gray-900">Selamat datang</h2>
                 <p class="text-[13px] text-gray-400 mt-1">Masuk ke panel manajemen Kopgun</p>
             </div>
